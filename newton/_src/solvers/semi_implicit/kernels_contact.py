@@ -4,8 +4,29 @@
 import warp as wp
 
 from ...geometry import ParticleFlags
-from ...geometry.kernels import triangle_closest_point_barycentric
+from ...geometry.flags import ShapeFlags
+from ...geometry.kernels import (
+    counter_increment,
+    mesh_query_point_sign,
+    resolve_mesh_sign_method,
+    sdf_box,
+    sdf_box_grad,
+    sdf_capsule,
+    sdf_capsule_grad,
+    sdf_cone,
+    sdf_cone_grad,
+    sdf_cylinder,
+    sdf_cylinder_grad,
+    sdf_ellipsoid,
+    sdf_ellipsoid_grad,
+    sdf_plane,
+    sdf_sphere,
+    sdf_sphere_grad,
+    triangle_closest_point_barycentric,
+)
+from ...geometry.types import Axis, GeoType
 from ...sim import Contacts, Model, State
+from ...utils.heightfield import HeightfieldData, sample_sdf_grad_heightfield
 
 
 @wp.func
@@ -254,6 +275,185 @@ def eval_particle_body_contact(
 
     wp.atomic_sub(particle_f, particle_index, f_total)
 
+    if body_index >= 0:
+        if body_f_in_world_frame:
+            wp.atomic_sub(body_f, body_index, wp.spatial_vector(f_total, wp.cross(bx, f_total)))
+        else:
+            wp.atomic_add(body_f, body_index, wp.spatial_vector(f_total, wp.cross(r, f_total)))
+
+
+@wp.kernel
+def eval_particle_body_contact_fused(
+    soft_rigid_contact_pairs: wp.array[wp.vec2i],
+    soft_rigid_contact_pair_count: wp.array[int],
+    particle_x: wp.array[wp.vec3],
+    particle_v: wp.array[wp.vec3],
+    particle_radius: wp.array[float],
+    particle_flags: wp.array[wp.int32],
+    particle_world: wp.array[int],
+    body_q: wp.array[wp.transform],
+    body_qd: wp.array[wp.spatial_vector],
+    body_com: wp.array[wp.vec3],
+    shape_transform: wp.array[wp.transform],
+    shape_body: wp.array[int],
+    shape_type: wp.array[int],
+    shape_scale: wp.array[wp.vec3],
+    shape_source_ptr: wp.array[wp.uint64],
+    shape_mesh_properties: wp.array[wp.int32],
+    shape_world: wp.array[int],
+    shape_margin: wp.array[float],
+    shape_flags: wp.array[wp.int32],
+    shape_heightfield_index: wp.array[wp.int32],
+    heightfield_data: wp.array[HeightfieldData],
+    heightfield_elevations: wp.array[wp.float32],
+    shape_material_ke: wp.array[float],
+    shape_material_kd: wp.array[float],
+    shape_material_kf: wp.array[float],
+    shape_material_mu: wp.array[float],
+    particle_ke: float,
+    particle_kd: float,
+    particle_kf: float,
+    particle_mu: float,
+    particle_ka: float,
+    margin: float,
+    contact_max: int,
+    body_f_in_world_frame: bool,
+    # outputs
+    contact_count: wp.array[int],
+    contact_tids: wp.array[int],
+    particle_f: wp.array[wp.vec3],
+    body_f: wp.array[wp.spatial_vector],
+):
+    """Evaluate particle-shape detection and penalty response without materializing contacts."""
+    tid = wp.tid()
+    if soft_rigid_contact_pair_count.shape[0] > 0 and tid >= soft_rigid_contact_pair_count[0]:
+        return
+
+    pair = soft_rigid_contact_pairs[tid]
+    particle_index = pair[0]
+    shape_index = pair[1]
+    if (particle_flags[particle_index] & ParticleFlags.ACTIVE) == 0:
+        return
+    if (shape_flags[shape_index] & ShapeFlags.COLLIDE_PARTICLES) == 0:
+        return
+
+    particle_world_id = particle_world[particle_index]
+    shape_world_id = shape_world[shape_index]
+    if particle_world_id != -1 and shape_world_id != -1 and particle_world_id != shape_world_id:
+        return
+
+    body_index = shape_body[shape_index]
+    px = particle_x[particle_index]
+    pv = particle_v[particle_index]
+    radius = particle_radius[particle_index]
+
+    X_wb = wp.transform_identity()
+    X_com = wp.vec3()
+    body_v_s = wp.spatial_vector()
+    if body_index >= 0:
+        X_wb = body_q[body_index]
+        X_com = body_com[body_index]
+        body_v_s = body_qd[body_index]
+
+    X_bs = shape_transform[shape_index]
+    X_ws = wp.transform_multiply(X_wb, X_bs)
+    X_sw = wp.transform_inverse(X_ws)
+    x_local = wp.transform_point(X_sw, px)
+
+    geo_type = shape_type[shape_index]
+    geo_scale = shape_scale[shape_index]
+    s_margin = shape_margin[shape_index] if shape_margin.shape[0] > 0 else 0.0
+
+    d = 1.0e6
+    n = wp.vec3()
+    surface_v = wp.vec3()
+
+    if geo_type == GeoType.SPHERE:
+        d = sdf_sphere(x_local, geo_scale[0])
+        n = sdf_sphere_grad(x_local, geo_scale[0])
+
+    if geo_type == GeoType.BOX:
+        d = sdf_box(x_local, geo_scale[0], geo_scale[1], geo_scale[2])
+        n = sdf_box_grad(x_local, geo_scale[0], geo_scale[1], geo_scale[2])
+
+    if geo_type == GeoType.CAPSULE:
+        d = sdf_capsule(x_local, geo_scale[0], geo_scale[1], int(Axis.Z))
+        n = sdf_capsule_grad(x_local, geo_scale[0], geo_scale[1], int(Axis.Z))
+
+    if geo_type == GeoType.CYLINDER:
+        d = sdf_cylinder(x_local, geo_scale[0], geo_scale[1], int(Axis.Z), -1.0, geo_scale[2])
+        n = sdf_cylinder_grad(x_local, geo_scale[0], geo_scale[1], int(Axis.Z), -1.0, geo_scale[2])
+
+    if geo_type == GeoType.CONE:
+        d = sdf_cone(x_local, geo_scale[0], geo_scale[1], int(Axis.Z))
+        n = sdf_cone_grad(x_local, geo_scale[0], geo_scale[1], int(Axis.Z))
+
+    if geo_type == GeoType.ELLIPSOID:
+        d = sdf_ellipsoid(x_local, geo_scale)
+        n = sdf_ellipsoid_grad(x_local, geo_scale)
+
+    if geo_type == GeoType.MESH or geo_type == GeoType.CONVEX_MESH:
+        mesh = shape_source_ptr[shape_index]
+        min_scale = wp.min(wp.min(wp.abs(geo_scale[0]), wp.abs(geo_scale[1])), wp.abs(geo_scale[2]))
+        query = mesh_query_point_sign(
+            mesh,
+            wp.cw_div(x_local, geo_scale),
+            margin + s_margin / min_scale + radius / min_scale,
+            resolve_mesh_sign_method(shape_mesh_properties[shape_index]),
+        )
+        if query.result:
+            shape_p = wp.mesh_eval_position(mesh, query.face, query.u, query.v)
+            shape_v = wp.mesh_eval_velocity(mesh, query.face, query.u, query.v)
+            shape_p = wp.cw_mul(shape_p, geo_scale)
+            surface_v = wp.cw_mul(shape_v, geo_scale)
+            delta = x_local - shape_p
+            d = wp.length(delta) * query.sign
+            n = wp.normalize(delta) * query.sign
+
+    if geo_type == GeoType.PLANE:
+        d = sdf_plane(x_local, geo_scale[0] * 0.5, geo_scale[1] * 0.5)
+        n = wp.vec3(0.0, 0.0, 1.0)
+
+    if geo_type == GeoType.HFIELD:
+        hfd = heightfield_data[shape_heightfield_index[shape_index]]
+        d, n = sample_sdf_grad_heightfield(hfd, heightfield_elevations, x_local)
+
+    if d >= margin + s_margin + radius:
+        return
+
+    contact_index = counter_increment(contact_count, 0, contact_tids, tid)
+    if contact_index >= contact_max:
+        return
+
+    bx = wp.transform_point(X_ws, x_local - n * d)
+    world_normal = wp.transform_vector(X_ws, n)
+    r = bx - wp.transform_point(X_wb, X_com)
+    c = wp.dot(world_normal, px - bx) - radius
+    if c > particle_ka:
+        return
+
+    ke = 0.5 * (particle_ke + shape_material_ke[shape_index])
+    kd = 0.5 * (particle_kd + shape_material_kd[shape_index])
+    kf = 0.5 * (particle_kf + shape_material_kf[shape_index])
+    mu = 0.5 * (particle_mu + shape_material_mu[shape_index])
+
+    body_w = wp.spatial_bottom(body_v_s)
+    body_v = wp.spatial_top(body_v_s)
+    bv = body_v + wp.transform_vector(X_ws, surface_v)
+    if body_f_in_world_frame:
+        bv += wp.cross(body_w, bx)
+    else:
+        bv += wp.cross(body_w, r)
+
+    relative_v = pv - bv
+    vn = wp.dot(world_normal, relative_v)
+    vt = relative_v - world_normal * vn
+    fn = world_normal * c * ke
+    fd = world_normal * wp.min(vn, 0.0) * kd
+    ft = wp.normalize(vt) * wp.min(kf * wp.length(vt), wp.abs(mu * c * ke))
+    f_total = fn + fd + ft
+
+    wp.atomic_sub(particle_f, particle_index, f_total)
     if body_index >= 0:
         if body_f_in_world_frame:
             wp.atomic_sub(body_f, body_index, wp.spatial_vector(f_total, wp.cross(bx, f_total)))
@@ -698,3 +898,68 @@ def eval_particle_body_contact_forces(
             outputs=[particle_f, body_f],
             device=model.device,
         )
+
+
+def eval_particle_body_contact_forces_fused(
+    model: Model,
+    state: State,
+    soft_rigid_contact_pairs: wp.array[wp.vec2i],
+    soft_rigid_contact_pair_count: wp.array[int],
+    soft_rigid_contact_pair_max: int,
+    soft_contact_margin: float,
+    soft_contact_max: int,
+    soft_contact_count: wp.array[int],
+    soft_contact_tids: wp.array[int],
+    particle_f: wp.array[wp.vec3],
+    body_f: wp.array[wp.spatial_vector],
+    body_f_in_world_frame: bool = False,
+    body_q: wp.array[wp.transform] | None = None,
+    body_qd: wp.array[wp.spatial_vector] | None = None,
+) -> None:
+    """Launch fused particle-shape contact detection and penalty response."""
+    if body_q is None:
+        body_q = state.body_q
+    if body_qd is None:
+        body_qd = state.body_qd
+    wp.launch(
+        kernel=eval_particle_body_contact_fused,
+        dim=soft_rigid_contact_pair_max,
+        inputs=[
+            soft_rigid_contact_pairs,
+            soft_rigid_contact_pair_count,
+            state.particle_q,
+            state.particle_qd,
+            model.particle_radius,
+            model.particle_flags,
+            model.particle_world,
+            body_q,
+            body_qd,
+            model.body_com,
+            model.shape_transform,
+            model.shape_body,
+            model.shape_type,
+            model.shape_scale,
+            model.shape_source_ptr,
+            model._shape_mesh_properties,
+            model.shape_world,
+            model.shape_margin,
+            model.shape_flags,
+            model.shape_heightfield_index,
+            model.heightfield_data,
+            model.heightfield_elevations,
+            model.shape_material_ke,
+            model.shape_material_kd,
+            model.shape_material_kf,
+            model.shape_material_mu,
+            model.soft_contact_ke,
+            model.soft_contact_kd,
+            model.soft_contact_kf,
+            model.soft_contact_mu,
+            model.particle_adhesion,
+            soft_contact_margin,
+            soft_contact_max,
+            body_f_in_world_frame,
+        ],
+        outputs=[soft_contact_count, soft_contact_tids, particle_f, body_f],
+        device=model.device,
+    )

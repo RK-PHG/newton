@@ -15,6 +15,7 @@ from .kernels_body import (
 from .kernels_contact import (
     eval_body_contact_forces,
     eval_particle_body_contact_forces,
+    eval_particle_body_contact_forces_fused,
     eval_particle_contact_forces,
     eval_triangle_contact_forces,
 )
@@ -204,7 +205,24 @@ class SolverSemiImplicit(SolverBase, CouplingInterface):
             )
 
             # particle shape contact
-            eval_particle_body_contact_forces(model, state_in, contacts, particle_f, body_f_work)
+            if contacts is not None and contacts._soft_contact_deferred:
+                if contacts._soft_contact_deferred_pairs is None or contacts._soft_contact_deferred_pair_count is None:
+                    raise RuntimeError("Deferred soft contacts were not prepared by CollisionPipeline.collide()")
+                eval_particle_body_contact_forces_fused(
+                    model,
+                    state_in,
+                    contacts._soft_contact_deferred_pairs,
+                    contacts._soft_contact_deferred_pair_count,
+                    contacts._soft_contact_deferred_pair_max,
+                    contacts._soft_contact_deferred_margin,
+                    contacts.soft_contact_max,
+                    contacts.soft_contact_count,
+                    contacts.soft_contact_tids,
+                    particle_f,
+                    body_f_work,
+                )
+            else:
+                eval_particle_body_contact_forces(model, state_in, contacts, particle_f, body_f_work)
 
             self.integrate_particles(model, state_in, state_out, dt)
 

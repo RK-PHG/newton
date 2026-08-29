@@ -1,0 +1,724 @@
+NVIDIA Tegra Profiler Report 2026@4@1@191-264138605071v0.
+Local (CLI){ (@JRENK“ı?RuvZrunZpythonZ*diffsim\profile_particle_primitive_wall.pyZ--viewerZnullZ--fused-soft-contactbD:\projects\newtonÚ,
+
+BOOST_ROOTD:\Programs\Boost\boost_1_85_0ÚE
+CHROME_CRASHPAD_PIPE_NAME(\\.\pipe\crashpad_29436_AIBHLZYWUWAYRBZUÚO
+PHPSTORM_VM_OPTIONS8D:\Renk\resource\wjb\jetbra\vmoptions\phpstorm.vmoptionsÚ!
+ALLUSERSPROFILEC:\ProgramDataÚQ
+DATASPELL_VM_OPTIONS9D:\Renk\resource\wjb\jetbra\vmoptions\dataspell.vmoptionsÚM
+APPCODE_VM_OPTIONS7D:\Renk\resource\wjb\jetbra\vmoptions\appcode.vmoptionsÚ$
+CLionD:\Clion\CLion 2025.3.3\binÚ)
+APPDATAC:\Users\86193\AppData\RoamingÚ
+JAX_TRACEBACK_FILTERINGoffÚ
+HOMEPATH\Users\86193Ú
+CONDA_PREFIXD:\AnacondaÚI
+CLION_VM_OPTIONS5D:\Renk\resource\wjb\jetbra\vmoptions\clion.vmoptionsÚK
+PROCESSOR_IDENTIFIER3Intel64 Family 6 Model 154 Stepping 3, GenuineIntelÚ
+COMPUTERNAMERENKÚ]
+JETBRAINSCLIENT_VM_OPTIONS?D:\Renk\resource\wjb\jetbra\vmoptions\jetbrainsclient.vmoptionsÚ
+CONDA_DEFAULT_ENVbaseÚ,
+LOCALAPPDATAC:\Users\86193\AppData\LocalÚ3
+SSL_CERT_FILE"D:\Anaconda\Library\ssl\cacert.pemÚ*
+	CONDA_EXED:\Anaconda\Scripts\conda.exeÚ 
+CONDA_PROMPT_MODIFIER(base) ÚW
+DEVECOSTUDIO_VM_OPTIONS<D:\Renk\resource\wjb\jetbra\vmoptions\devecostudio.vmoptionsÚ*
+CONDA_PYTHON_EXED:\Anaconda\python.exeÚ
+GLOG_logbufsecs0Ú
+CONDA_SHLVL1Ú
+GOPATHC:\Users\86193\goÚ$
+	CUDA_PATHD:\Programs\cudainstallÚ3
+CUDA_PATH_V11_6 D:\Programs\CUDA11.6\DevelopmentÚ+
+ProgramFiles(x86)C:\Program Files (x86)Ú
+PROCESSOR_ARCHITECTUREAMD64ÚG
+IDEA_VM_OPTIONS4D:\Renk\resource\wjb\jetbra\vmoptions\idea.vmoptionsÚK
+CUDA_PATH_V12_68C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.6ÚÖ
+VSCODE_GIT_ASKPASS_MAINjc:\Users\86193\AppData\Roaming\Code\User\globalStorage\vscode.git\askpass\70789581cae28aa7\askpass-main.jsÚ
+EFC_14480_15929130361Ú*
+CUDA_PATH_V12_8D:\Programs\cudainstallÚ
+USERNAME86193Ú&
+ComSpecC:\WINDOWS\system32\cmd.exeÚ3
+CommonProgramFilesC:\Program Files\Common FilesÚ>
+CommonProgramFiles(x86)#C:\Program Files (x86)\Common FilesÚ3
+CommonProgramW6432C:\Program Files\Common FilesÚO
+DATAGRIP_VM_OPTIONS8D:\Renk\resource\wjb\jetbra\vmoptions\datagrip.vmoptionsÚ4
+
+DriverData&C:\Windows\System32\Drivers\DriverDataÚ
+EFC_14480_41267989901Ú 
+EIGEN3_ROOTD:\Programs\EigenÚM
+GATEWAY_VM_OPTIONS7D:\Renk\resource\wjb\jetbra\vmoptions\gateway.vmoptionsÚ 
+ProgramW6432C:\Program FilesÚK
+GOLAND_VM_OPTIONS6D:\Renk\resource\wjb\jetbra\vmoptions\goland.vmoptionsÚ 
+ProgramFilesC:\Program FilesÚØ
+
+IGCCSVC_DB†AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAA3CQT6geyI0uBh6PWdG8uewQAAAACAAAAAAAQZgAAAAEAACAAAABtbtuhrlx37jTZFE6GPH2xug+k/8kh1hI/H0OCraAZoQAAAAAOgAAAAAIAACAAAABTc7C8gYt7zdBzN+kKcWgPWU6AcMhYMnsK/cKu/arn/mAAAACOUFBczxXR0j9MlLfUGrHN5WuF/cn5OXKbx2sudBV9ZefmuUmcg9/8qyWZJzrsyO1/lt8KnsDErMZK9OsGPaayijPWbg1+dPBtJQLJd0hVk9Aha4bjusfS36qO3Tno2kRAAAAAdV/if6j0d2KeHnR286MD4/aWIOi8zbXib8kOVIp1YNuvvIQgCTk17+TYEapMZg1hTa7tBtXGzI5vymKOGOq5Zg==Ú
+	HOMEDRIVEC:Ú+
+PSExecutionPolicyPreferenceRemoteSignedÚ+
+	JAVA_HOMED:\Programs\Compiler\java\javaÚM
+PYCHARM_VM_OPTIONS7D:\Renk\resource\wjb\jetbra\vmoptions\pycharm.vmoptionsÚ_
+JETBRAINS_CLIENT_VM_OPTIONS@D:\Renk\resource\wjb\jetbra\vmoptions\jetbrains_client.vmoptionsÚ
+LOGONSERVER\\RENKÚ
+MUJOCO_WARP_PLATFORMgpuÚ
+NUMBER_OF_PROCESSORS20ÚB
+NVTOOLSEXT_PATH/C:\Program Files\NVIDIA Corporation\NvToolsExt\Ú
+OS
+Windows_NTÚ#
+OneDriveC:\Users\86193\OneDriveÚN
+PATHEXTC.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC;.PY;.PYW;.CPLÚ#
+PM_PACKAGES_ROOTD:\packman-repoÚs
+BUNDLED_DEBUGPY_PATH[c:\Users\86193\.vscode\extensions\ms-python.debugpy-2026.6.0-win32-x64\bundled\libs\debugpyÚ
+PROCESSOR_LEVEL6Ú
+PROCESSOR_REVISION9a03Ú#
+PYDEVD_DISABLE_FILE_VALIDATION1ÚO
+WEBSTORM_VM_OPTIONS8D:\Renk\resource\wjb\jetbra\vmoptions\webstorm.vmoptionsÚ°
+PSModulePathêC:\Users\86193\Documents\WindowsPowerShell\Modules;C:\Program Files\WindowsPowerShell\Modules;C:\WINDOWS\system32\WindowsPowerShell\v1.0\ModulesÚ
+PUBLICC:\Users\PublicÚâ
+PathÄD:\projects\newton\.venv/Scripts;D:\Anaconda;D:\Anaconda\Library\mingw-w64\bin;D:\Anaconda\Library\usr\bin;D:\Anaconda\Library\bin;D:\Anaconda\Scripts;D:\Anaconda\bin;D:\Anaconda\condabin;D:\Programs\cudainstall\bin;D:\Programs\cudainstall\libnvvp;D:\Programs\CUDA11.6\Development\bin;D:\Programs\CUDA11.6\Development\libnvvp;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.6\bin;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.6\libnvvp;D:\Programs\python\Python\Scripts;D:\Programs\python\Python;D:\Programs\Compiler\java\java\bin;C:\Program Files\Common Files\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0;C:\Windows\System32\OpenSSH;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\Docker\Docker\resources\bin;C:\Program Files\dotnet;D:\Programs\Compiler\MinGW\MinGW\bin;D:\Programs\Git\Git\Git\cmd;D:\Programs\vcpkg\vcpkg;D:\Programs\CMake\CMake\bin;D:\Programs\zookeeper\apache-zookeeper-3.8.1-bin\bin;C:\Program Files\MySQL\MySQL Server 8.0\bin;D:\Programs\Doxygen\doxygen\bin;D:\Programs\MangoDB\bin;D:\Renk\Study\Mujoco\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0;C:\WINDOWS\System32\OpenSSH;D:\Programs\NodeJS\nodejs;C:\Program Files\NVIDIA Corporation\NVIDIA App\NvDLISR;D:\Anaconda\Scripts;C:\Users\86193\.conda\envs\gaussian_splatting\Lib\site-packages\torch\lib;C:\Program Files\NVIDIA Corporation\Nsight Compute 2025.1.0;D:\Programs\ffmpeg\ffmpeg-master-latest-win64-gpl-shared\bin;C:\Program Files\Go\bin;D:\Programs\Nsight\Nsight System\NSYS\target-windows-x64;C:\Users\86193\.local\bin;C:\Users\86193\AppData\Local\Programs\Python\Launcher;C:\Users\86193\AppData\Local\Microsoft\WindowsApps;D:\Programs\IDEs\vscode\VSCODE\Microsoft VS Code\bin;D:\Programs\WebStorm\WebStorm 2024.1\bin;.;C:\Users\86193\.dotnet\tools;C:\Users\86193\AppData\Local\Programs\cursor\resources\app\bin;C:\Users\86193\AppData\Local\Programs\Ollama;D:\Programs\MangoDB\bin;C:\Users\86193\AppData\Roaming\npm;C:\Users\86193\go\bin;D:\Clion\CLion 2025.3.3\bin;C:\Program Files\NVIDIA Corporation\Nsight Systems 2026.4.1\target-windows-x64;.;c:\Users\86193\.vscode\extensions\ms-python.debugpy-2026.6.0-win32-x64\bundled\scripts\noConfigScriptsÚ
+ProgramDataC:\ProgramDataÚI
+RIDER_VM_OPTIONS5D:\Renk\resource\wjb\jetbra\vmoptions\rider.vmoptionsÚO
+RUBYMINE_VM_OPTIONS8D:\Renk\resource\wjb\jetbra\vmoptions\rubymine.vmoptionsÚ
+SESSIONNAMEConsoleÚK
+STUDIO_VM_OPTIONS6D:\Renk\resource\wjb\jetbra\vmoptions\studio.vmoptionsÚ
+SystemDriveC:Ú
+
+SystemRoot
+C:\WINDOWSÚ)
+TEMP!C:\Users\86193\AppData\Local\TempÚ(
+TMP!C:\Users\86193\AppData\Local\TempÚ
+
+USERDOMAINRENKÚ!
+USERDOMAIN_ROAMINGPROFILERENKÚ
+USERPROFILEC:\Users\86193Ú'
+VIRTUAL_ENVD:\projects\newton\.venvÚ
+VIRTUAL_ENV_PROMPTnewtonÚ%
+ VSCODE_PYTHON_AUTOACTIVATE_GUARD1ÚK
+WEBIDE_VM_OPTIONS6D:\Renk\resource\wjb\jetbra\vmoptions\webide.vmoptionsÚ5
+WebStorm)D:\Programs\WebStorm\WebStorm 2024.1\bin;Ú
+ZES_ENABLE_SYSMAN1Ú
+windir
+C:\WINDOWSÚ
+TERM_PROGRAMvscodeÚ
+TERM_PROGRAM_VERSION1.135.0Ú
+LANGzh_CN.UTF-8Ú
+	COLORTERM	truecolorÚ®
+ VSCODE_DEBUGPY_ADAPTER_ENDPOINTSÉc:\Users\86193\.vscode\extensions\ms-python.debugpy-2026.6.0-win32-x64\.noConfigDebugAdapterEndpoints\endpoint-8caa9779e338fe8b.txtÚà
+PYTHONSTARTUPwc:\Users\86193\AppData\Roaming\Code\User\workspaceStorage\583b3a87829bfc9117e4aab6bf14e557\ms-python.python\pythonrc.pyÚ
+PYTHON_BASIC_REPL1Út
+GIT_ASKPASSec:\Users\86193\AppData\Roaming\Code\User\globalStorage\vscode.git\askpass\70789581cae28aa7\askpass.shÚT
+VSCODE_GIT_ASKPASS_NODE9D:\Programs\IDEs\vscode\VSCODE\Microsoft VS Code\Code.exeÚ!
+VSCODE_GIT_ASKPASS_EXTRA_ARGS Ú<
+VSCODE_GIT_IPC_HANDLE#\\.\pipe\vscode-git-4de9d7ec7d-sockÚ
+VSCODE_INJECTION1Ú+
+
+_CONDA_EXED:\Anaconda\Scripts\conda.exeÚ
+_CONDA_ROOTD:\AnacondaÚ"
+__CONDA_OPENSLL_CERT_FILE_SET1Ú
+
+LD_PRELOAD{}Ú 
+IS_PROCESS_PROFILED_BY_NSYS1ÄC∏‡ Í$a8186608-b01c-4469-84fb-8267fb054378Ú Ç ‚   ( 8 J RX ` QDTEXT00ƒü
+Ø]
+Local (CLI)ó]
+20
+2918
+
+x86_64
+æπ{"items":[{"cpuid":0,"pmuarch":"X64 12th Gen Intel(R) Core(TM) i9-12900H","maxfreqhz":2918000000,"EfficiencyClass":1,"SchedulingClass":1,"EfficiencyType":"P"},{"cpuid":1,"pmuarch":"X64 12th Gen Intel(R) Core(TM) i9-12900H","maxfreqhz":2918000000,"EfficiencyClass":1,"SchedulingClass":1,"EfficiencyType":"P"},{"cpuid":2,"pmuarch":"X64 12th Gen Intel(R) Core(TM) i9-12900H","maxfreqhz":2918000000,"EfficiencyClass":1,"SchedulingClass":1,"EfficiencyType":"P"},{"cpuid":3,"pmuarch":"X64 12th Gen Intel(R) Core(TM) i9-12900H","maxfreqhz":2918000000,"EfficiencyClass":1,"SchedulingClass":1,"EfficiencyType":"P"},{"cpuid":4,"pmuarch":"X64 12th Gen Intel(R) Core(TM) i9-12900H","maxfreqhz":2918000000,"EfficiencyClass":1,"SchedulingClass":2,"EfficiencyType":"P"},{"cpuid":5,"pmuarch":"X64 12th Gen Intel(R) Core(TM) i9-12900H","maxfreqhz":2918000000,"EfficiencyClass":1,"SchedulingClass":2,"EfficiencyType":"P"},{"cpuid":6,"pmuarch":"X64 12th Gen Intel(R) Core(TM) i9-12900H","maxfreqhz":2918000000,"EfficiencyClass":1,"SchedulingClass":2,"EfficiencyType":"P"},{"cpuid":7,"pmuarch":"X64 12th Gen Intel(R) Core(TM) i9-12900H","maxfreqhz":2918000000,"EfficiencyClass":1,"SchedulingClass":2,"EfficiencyType":"P"},{"cpuid":8,"pmuarch":"X64 12th Gen Intel(R) Core(TM) i9-12900H","maxfreqhz":2918000000,"EfficiencyClass":1,"SchedulingClass":1,"EfficiencyType":"P"},{"cpuid":9,"pmuarch":"X64 12th Gen Intel(R) Core(TM) i9-12900H","maxfreqhz":2918000000,"EfficiencyClass":1,"SchedulingClass":1,"EfficiencyType":"P"},{"cpuid":10,"pmuarch":"X64 12th Gen Intel(R) Core(TM) i9-12900H","maxfreqhz":2918000000,"EfficiencyClass":1,"SchedulingClass":1,"EfficiencyType":"P"},{"cpuid":11,"pmuarch":"X64 12th Gen Intel(R) Core(TM) i9-12900H","maxfreqhz":2918000000,"EfficiencyClass":1,"SchedulingClass":1,"EfficiencyType":"P"},{"cpuid":12,"pmuarch":"X64 12th Gen Intel(R) Core(TM) i9-12900H","maxfreqhz":2918000000,"EfficiencyClass":0,"SchedulingClass":0,"EfficiencyType":"E"},{"cpuid":13,"pmuarch":"X64 12th Gen Intel(R) Core(TM) i9-12900H","maxfreqhz":2918000000,"EfficiencyClass":0,"SchedulingClass":0,"EfficiencyType":"E"},{"cpuid":14,"pmuarch":"X64 12th Gen Intel(R) Core(TM) i9-12900H","maxfreqhz":2918000000,"EfficiencyClass":0,"SchedulingClass":0,"EfficiencyType":"E"},{"cpuid":15,"pmuarch":"X64 12th Gen Intel(R) Core(TM) i9-12900H","maxfreqhz":2918000000,"EfficiencyClass":0,"SchedulingClass":0,"EfficiencyType":"E"},{"cpuid":16,"pmuarch":"X64 12th Gen Intel(R) Core(TM) i9-12900H","maxfreqhz":2918000000,"EfficiencyClass":0,"SchedulingClass":0,"EfficiencyType":"E"},{"cpuid":17,"pmuarch":"X64 12th Gen Intel(R) Core(TM) i9-12900H","maxfreqhz":2918000000,"EfficiencyClass":0,"SchedulingClass":0,"EfficiencyType":"E"},{"cpuid":18,"pmuarch":"X64 12th Gen Intel(R) Core(TM) i9-12900H","maxfreqhz":2918000000,"EfficiencyClass":0,"SchedulingClass":0,"EfficiencyType":"E"},{"cpuid":19,"pmuarch":"X64 12th Gen Intel(R) Core(TM) i9-12900H","maxfreqhz":2918000000,"EfficiencyClass":0,"SchedulingClass":0,"EfficiencyType":"E"}]}
+À0
+
+Õ57652
+˙1
+ŸWindows
+›Windows 10.0.26200
+æ:‚∏:BOOST_ROOT=D:\Programs\Boost\boost_1_85_0 CHROME_CRASHPAD_PIPE_NAME=\\.\pipe\crashpad_29436_AIBHLZYWUWAYRBZU PHPSTORM_VM_OPTIONS=D:\Renk\resource\wjb\jetbra\vmoptions\phpstorm.vmoptions ALLUSERSPROFILE=C:\ProgramData DATASPELL_VM_OPTIONS=D:\Renk\resource\wjb\jetbra\vmoptions\dataspell.vmoptions APPCODE_VM_OPTIONS=D:\Renk\resource\wjb\jetbra\vmoptions\appcode.vmoptions CLion=D:\Clion\CLion 2025.3.3\bin APPDATA=C:\Users\86193\AppData\Roaming JAX_TRACEBACK_FILTERING=off HOMEPATH=\Users\86193 CONDA_PREFIX=D:\Anaconda CLION_VM_OPTIONS=D:\Renk\resource\wjb\jetbra\vmoptions\clion.vmoptions PROCESSOR_IDENTIFIER=Intel64 Family 6 Model 154 Stepping 3, GenuineIntel COMPUTERNAME=RENK JETBRAINSCLIENT_VM_OPTIONS=D:\Renk\resource\wjb\jetbra\vmoptions\jetbrainsclient.vmoptions CONDA_DEFAULT_ENV=base LOCALAPPDATA=C:\Users\86193\AppData\Local SSL_CERT_FILE=D:\Anaconda\Library\ssl\cacert.pem CONDA_EXE=D:\Anaconda\Scripts\conda.exe CONDA_PROMPT_MODIFIER=(base)  DEVECOSTUDIO_VM_OPTIONS=D:\Renk\resource\wjb\jetbra\vmoptions\devecostudio.vmoptions CONDA_PYTHON_EXE=D:\Anaconda\python.exe GLOG_logbufsecs=0 CONDA_SHLVL=1 GOPATH=C:\Users\86193\go CUDA_PATH=D:\Programs\cudainstall CUDA_PATH_V11_6=D:\Programs\CUDA11.6\Development ProgramFiles(x86)=C:\Program Files (x86) PROCESSOR_ARCHITECTURE=AMD64 IDEA_VM_OPTIONS=D:\Renk\resource\wjb\jetbra\vmoptions\idea.vmoptions CUDA_PATH_V12_6=C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.6 VSCODE_GIT_ASKPASS_MAIN=c:\Users\86193\AppData\Roaming\Code\User\globalStorage\vscode.git\askpass\70789581cae28aa7\askpass-main.js EFC_14480_1592913036=1 CUDA_PATH_V12_8=D:\Programs\cudainstall USERNAME=86193 ComSpec=C:\WINDOWS\system32\cmd.exe CommonProgramFiles=C:\Program Files\Common Files CommonProgramFiles(x86)=C:\Program Files (x86)\Common Files CommonProgramW6432=C:\Program Files\Common Files DATAGRIP_VM_OPTIONS=D:\Renk\resource\wjb\jetbra\vmoptions\datagrip.vmoptions DriverData=C:\Windows\System32\Drivers\DriverData EFC_14480_4126798990=1 EIGEN3_ROOT=D:\Programs\Eigen GATEWAY_VM_OPTIONS=D:\Renk\resource\wjb\jetbra\vmoptions\gateway.vmoptions ProgramW6432=C:\Program Files GOLAND_VM_OPTIONS=D:\Renk\resource\wjb\jetbra\vmoptions\goland.vmoptions ProgramFiles=C:\Program Files IGCCSVC_DB=AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAA3CQT6geyI0uBh6PWdG8uewQAAAACAAAAAAAQZgAAAAEAACAAAABtbtuhrlx37jTZFE6GPH2xug+k/8kh1hI/H0OCraAZoQAAAAAOgAAAAAIAACAAAABTc7C8gYt7zdBzN+kKcWgPWU6AcMhYMnsK/cKu/arn/mAAAACOUFBczxXR0j9MlLfUGrHN5WuF/cn5OXKbx2sudBV9ZefmuUmcg9/8qyWZJzrsyO1/lt8KnsDErMZK9OsGPaayijPWbg1+dPBtJQLJd0hVk9Aha4bjusfS36qO3Tno2kRAAAAAdV/if6j0d2KeHnR286MD4/aWIOi8zbXib8kOVIp1YNuvvIQgCTk17+TYEapMZg1hTa7tBtXGzI5vymKOGOq5Zg== HOMEDRIVE=C: PSExecutionPolicyPreference=RemoteSigned JAVA_HOME=D:\Programs\Compiler\java\java PYCHARM_VM_OPTIONS=D:\Renk\resource\wjb\jetbra\vmoptions\pycharm.vmoptions JETBRAINS_CLIENT_VM_OPTIONS=D:\Renk\resource\wjb\jetbra\vmoptions\jetbrains_client.vmoptions LOGONSERVER=\\RENK MUJOCO_WARP_PLATFORM=gpu NUMBER_OF_PROCESSORS=20 NVTOOLSEXT_PATH=C:\Program Files\NVIDIA Corporation\NvToolsExt\ OS=Windows_NT OneDrive=C:\Users\86193\OneDrive PATHEXT=.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC;.PY;.PYW;.CPL PM_PACKAGES_ROOT=D:\packman-repo BUNDLED_DEBUGPY_PATH=c:\Users\86193\.vscode\extensions\ms-python.debugpy-2026.6.0-win32-x64\bundled\libs\debugpy PROCESSOR_LEVEL=6 PROCESSOR_REVISION=9a03 PYDEVD_DISABLE_FILE_VALIDATION=1 WEBSTORM_VM_OPTIONS=D:\Renk\resource\wjb\jetbra\vmoptions\webstorm.vmoptions PSModulePath=C:\Users\86193\Documents\WindowsPowerShell\Modules;C:\Program Files\WindowsPowerShell\Modules;C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules PUBLIC=C:\Users\Public Path=D:\projects\newton\.venv/Scripts;D:\Anaconda;D:\Anaconda\Library\mingw-w64\bin;D:\Anaconda\Library\usr\bin;D:\Anaconda\Library\bin;D:\Anaconda\Scripts;D:\Anaconda\bin;D:\Anaconda\condabin;D:\Programs\cudainstall\bin;D:\Programs\cudainstall\libnvvp;D:\Programs\CUDA11.6\Development\bin;D:\Programs\CUDA11.6\Development\libnvvp;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.6\bin;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.6\libnvvp;D:\Programs\python\Python\Scripts;D:\Programs\python\Python;D:\Programs\Compiler\java\java\bin;C:\Program Files\Common Files\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0;C:\Windows\System32\OpenSSH;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\Docker\Docker\resources\bin;C:\Program Files\dotnet;D:\Programs\Compiler\MinGW\MinGW\bin;D:\Programs\Git\Git\Git\cmd;D:\Programs\vcpkg\vcpkg;D:\Programs\CMake\CMake\bin;D:\Programs\zookeeper\apache-zookeeper-3.8.1-bin\bin;C:\Program Files\MySQL\MySQL Server 8.0\bin;D:\Programs\Doxygen\doxygen\bin;D:\Programs\MangoDB\bin;D:\Renk\Study\Mujoco\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0;C:\WINDOWS\System32\OpenSSH;D:\Programs\NodeJS\nodejs;C:\Program Files\NVIDIA Corporation\NVIDIA App\NvDLISR;D:\Anaconda\Scripts;C:\Users\86193\.conda\envs\gaussian_splatting\Lib\site-packages\torch\lib;C:\Program Files\NVIDIA Corporation\Nsight Compute 2025.1.0;D:\Programs\ffmpeg\ffmpeg-master-latest-win64-gpl-shared\bin;C:\Program Files\Go\bin;D:\Programs\Nsight\Nsight System\NSYS\target-windows-x64;C:\Users\86193\.local\bin;C:\Users\86193\AppData\Local\Programs\Python\Launcher;C:\Users\86193\AppData\Local\Microsoft\WindowsApps;D:\Programs\IDEs\vscode\VSCODE\Microsoft VS Code\bin;D:\Programs\WebStorm\WebStorm 2024.1\bin;.;C:\Users\86193\.dotnet\tools;C:\Users\86193\AppData\Local\Programs\cursor\resources\app\bin;C:\Users\86193\AppData\Local\Programs\Ollama;D:\Programs\MangoDB\bin;C:\Users\86193\AppData\Roaming\npm;C:\Users\86193\go\bin;D:\Clion\CLion 2025.3.3\bin;C:\Program Files\NVIDIA Corporation\Nsight Systems 2026.4.1\target-windows-x64;.;c:\Users\86193\.vscode\extensions\ms-python.debugpy-2026.6.0-win32-x64\bundled\scripts\noConfigScripts ProgramData=C:\ProgramData RIDER_VM_OPTIONS=D:\Renk\resource\wjb\jetbra\vmoptions\rider.vmoptions RUBYMINE_VM_OPTIONS=D:\Renk\resource\wjb\jetbra\vmoptions\rubymine.vmoptions SESSIONNAME=Console STUDIO_VM_OPTIONS=D:\Renk\resource\wjb\jetbra\vmoptions\studio.vmoptions SystemDrive=C: SystemRoot=C:\WINDOWS TEMP=C:\Users\86193\AppData\Local\Temp TMP=C:\Users\86193\AppData\Local\Temp USERDOMAIN=RENK USERDOMAIN_ROAMINGPROFILE=RENK USERPROFILE=C:\Users\86193 VIRTUAL_ENV=D:\projects\newton\.venv VIRTUAL_ENV_PROMPT=newton VSCODE_PYTHON_AUTOACTIVATE_GUARD=1 WEBIDE_VM_OPTIONS=D:\Renk\resource\wjb\jetbra\vmoptions\webide.vmoptions WebStorm=D:\Programs\WebStorm\WebStorm 2024.1\bin; ZES_ENABLE_SYSMAN=1 windir=C:\WINDOWS TERM_PROGRAM=vscode TERM_PROGRAM_VERSION=1.135.0 LANG=zh_CN.UTF-8 COLORTERM=truecolor VSCODE_DEBUGPY_ADAPTER_ENDPOINTS=c:\Users\86193\.vscode\extensions\ms-python.debugpy-2026.6.0-win32-x64\.noConfigDebugAdapterEndpoints\endpoint-8caa9779e338fe8b.txt PYTHONSTARTUP=c:\Users\86193\AppData\Roaming\Code\User\workspaceStorage\583b3a87829bfc9117e4aab6bf14e557\ms-python.python\pythonrc.py PYTHON_BASIC_REPL=1 GIT_ASKPASS=c:\Users\86193\AppData\Roaming\Code\User\globalStorage\vscode.git\askpass\70789581cae28aa7\askpass.sh VSCODE_GIT_ASKPASS_NODE=D:\Programs\IDEs\vscode\VSCODE\Microsoft VS Code\Code.exe VSCODE_GIT_ASKPASS_EXTRA_ARGS= VSCODE_GIT_IPC_HANDLE=\\.\pipe\vscode-git-4de9d7ec7d-sock VSCODE_INJECTION=1 _CONDA_EXE=D:\Anaconda\Scripts\conda.exe _CONDA_ROOT=D:\Anaconda __CONDA_OPENSLL_CERT_FILE_SET=1
+
+„12090
+	ÎRENK
+Ω1
+æ1
+¡0
+)—$A4556892-5F11-11ED-80F3-9C2DCDDD3E8A
+©1
+¨1
+≠1
+∂1
+∆1
+«1
+»1
+ 0
+Õ0
+–1
+—1
+”1
+›1
+Ú6.2.26100.9168.
+˚
+ 
+˛ 
+Ä1
+èÅâ
+Å "NVIDIA GeForce RTX 3070 Laptop GPU0000:01:00.0 *$4656faba-16cf-fad1-a5f1-61c588aa7e030≈§:GA104H PÄÄÄXÄÄ‡ˇ`Ä†»ïÖhÄÏÓÁp(x êÄò † ®°∞∏ÄÄ¿»ÄÄ–ÄÄÿÄò‡Ä†ËÄÄ ¯Ä0àêÄòÄ†Ä®@∞ˇˇˇˇ∏ˇˇ¿ˇˇ»–ÿ‡Ë ¯ ÇAmpereà 
+,"NVIDIA GeForce RTX 3070 Laptop GPU 0◊Ê
+,"NVIDIA GeForce RTX 3070 Laptop GPU 0©Á
+'Microsoft Basic Render Driver 0Ω”
+Ñ0
+à0
+ã1
+å0
+é 
+ê 
+ë1
+í0
+ï0
+ñ1
+ò0
+ô 
+õ 
+Àú≈
+¬
+nvml_pluginCollect NVML metricsVCollects power and temperature metrics using the NVIDIA Management Library (NVML)
+ API"¬Options:
+  -i | --interval  Sampling interval in milliseconds (default: 100)
+  -g | --gpu-devices  GPUs to be sampled. Available options are: all, cuda-visible, or a comma-separated
+                      list of GPU IDs (e.g., 0,1,3) (default: cuda-visible)
+
+The power usage is collected in Watts using the `nvmlDeviceGetFieldValues` API
+function.
+The GPU temperature is collected in degrees Celsius with the
+`nvmlDeviceGetTemperature` API function.
+(ÄÄÄÄÄÄ@Ì@
+Local (CLI){ (@JRENK“ı?RuvZrunZpythonZ*diffsim\profile_particle_primitive_wall.pyZ--viewerZnullZ--fused-soft-contactbD:\projects\newtonÚ,
+
+BOOST_ROOTD:\Programs\Boost\boost_1_85_0ÚE
+CHROME_CRASHPAD_PIPE_NAME(\\.\pipe\crashpad_29436_AIBHLZYWUWAYRBZUÚO
+PHPSTORM_VM_OPTIONS8D:\Renk\resource\wjb\jetbra\vmoptions\phpstorm.vmoptionsÚ!
+ALLUSERSPROFILEC:\ProgramDataÚQ
+DATASPELL_VM_OPTIONS9D:\Renk\resource\wjb\jetbra\vmoptions\dataspell.vmoptionsÚM
+APPCODE_VM_OPTIONS7D:\Renk\resource\wjb\jetbra\vmoptions\appcode.vmoptionsÚ$
+CLionD:\Clion\CLion 2025.3.3\binÚ)
+APPDATAC:\Users\86193\AppData\RoamingÚ
+JAX_TRACEBACK_FILTERINGoffÚ
+HOMEPATH\Users\86193Ú
+CONDA_PREFIXD:\AnacondaÚI
+CLION_VM_OPTIONS5D:\Renk\resource\wjb\jetbra\vmoptions\clion.vmoptionsÚK
+PROCESSOR_IDENTIFIER3Intel64 Family 6 Model 154 Stepping 3, GenuineIntelÚ
+COMPUTERNAMERENKÚ]
+JETBRAINSCLIENT_VM_OPTIONS?D:\Renk\resource\wjb\jetbra\vmoptions\jetbrainsclient.vmoptionsÚ
+CONDA_DEFAULT_ENVbaseÚ,
+LOCALAPPDATAC:\Users\86193\AppData\LocalÚ3
+SSL_CERT_FILE"D:\Anaconda\Library\ssl\cacert.pemÚ*
+	CONDA_EXED:\Anaconda\Scripts\conda.exeÚ 
+CONDA_PROMPT_MODIFIER(base) ÚW
+DEVECOSTUDIO_VM_OPTIONS<D:\Renk\resource\wjb\jetbra\vmoptions\devecostudio.vmoptionsÚ*
+CONDA_PYTHON_EXED:\Anaconda\python.exeÚ
+GLOG_logbufsecs0Ú
+CONDA_SHLVL1Ú
+GOPATHC:\Users\86193\goÚ$
+	CUDA_PATHD:\Programs\cudainstallÚ3
+CUDA_PATH_V11_6 D:\Programs\CUDA11.6\DevelopmentÚ+
+ProgramFiles(x86)C:\Program Files (x86)Ú
+PROCESSOR_ARCHITECTUREAMD64ÚG
+IDEA_VM_OPTIONS4D:\Renk\resource\wjb\jetbra\vmoptions\idea.vmoptionsÚK
+CUDA_PATH_V12_68C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.6ÚÖ
+VSCODE_GIT_ASKPASS_MAINjc:\Users\86193\AppData\Roaming\Code\User\globalStorage\vscode.git\askpass\70789581cae28aa7\askpass-main.jsÚ
+EFC_14480_15929130361Ú*
+CUDA_PATH_V12_8D:\Programs\cudainstallÚ
+USERNAME86193Ú&
+ComSpecC:\WINDOWS\system32\cmd.exeÚ3
+CommonProgramFilesC:\Program Files\Common FilesÚ>
+CommonProgramFiles(x86)#C:\Program Files (x86)\Common FilesÚ3
+CommonProgramW6432C:\Program Files\Common FilesÚO
+DATAGRIP_VM_OPTIONS8D:\Renk\resource\wjb\jetbra\vmoptions\datagrip.vmoptionsÚ4
+
+DriverData&C:\Windows\System32\Drivers\DriverDataÚ
+EFC_14480_41267989901Ú 
+EIGEN3_ROOTD:\Programs\EigenÚM
+GATEWAY_VM_OPTIONS7D:\Renk\resource\wjb\jetbra\vmoptions\gateway.vmoptionsÚ 
+ProgramW6432C:\Program FilesÚK
+GOLAND_VM_OPTIONS6D:\Renk\resource\wjb\jetbra\vmoptions\goland.vmoptionsÚ 
+ProgramFilesC:\Program FilesÚØ
+
+IGCCSVC_DB†AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAA3CQT6geyI0uBh6PWdG8uewQAAAACAAAAAAAQZgAAAAEAACAAAABtbtuhrlx37jTZFE6GPH2xug+k/8kh1hI/H0OCraAZoQAAAAAOgAAAAAIAACAAAABTc7C8gYt7zdBzN+kKcWgPWU6AcMhYMnsK/cKu/arn/mAAAACOUFBczxXR0j9MlLfUGrHN5WuF/cn5OXKbx2sudBV9ZefmuUmcg9/8qyWZJzrsyO1/lt8KnsDErMZK9OsGPaayijPWbg1+dPBtJQLJd0hVk9Aha4bjusfS36qO3Tno2kRAAAAAdV/if6j0d2KeHnR286MD4/aWIOi8zbXib8kOVIp1YNuvvIQgCTk17+TYEapMZg1hTa7tBtXGzI5vymKOGOq5Zg==Ú
+	HOMEDRIVEC:Ú+
+PSExecutionPolicyPreferenceRemoteSignedÚ+
+	JAVA_HOMED:\Programs\Compiler\java\javaÚM
+PYCHARM_VM_OPTIONS7D:\Renk\resource\wjb\jetbra\vmoptions\pycharm.vmoptionsÚ_
+JETBRAINS_CLIENT_VM_OPTIONS@D:\Renk\resource\wjb\jetbra\vmoptions\jetbrains_client.vmoptionsÚ
+LOGONSERVER\\RENKÚ
+MUJOCO_WARP_PLATFORMgpuÚ
+NUMBER_OF_PROCESSORS20ÚB
+NVTOOLSEXT_PATH/C:\Program Files\NVIDIA Corporation\NvToolsExt\Ú
+OS
+Windows_NTÚ#
+OneDriveC:\Users\86193\OneDriveÚN
+PATHEXTC.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC;.PY;.PYW;.CPLÚ#
+PM_PACKAGES_ROOTD:\packman-repoÚs
+BUNDLED_DEBUGPY_PATH[c:\Users\86193\.vscode\extensions\ms-python.debugpy-2026.6.0-win32-x64\bundled\libs\debugpyÚ
+PROCESSOR_LEVEL6Ú
+PROCESSOR_REVISION9a03Ú#
+PYDEVD_DISABLE_FILE_VALIDATION1ÚO
+WEBSTORM_VM_OPTIONS8D:\Renk\resource\wjb\jetbra\vmoptions\webstorm.vmoptionsÚ°
+PSModulePathêC:\Users\86193\Documents\WindowsPowerShell\Modules;C:\Program Files\WindowsPowerShell\Modules;C:\WINDOWS\system32\WindowsPowerShell\v1.0\ModulesÚ
+PUBLICC:\Users\PublicÚâ
+PathÄD:\projects\newton\.venv/Scripts;D:\Anaconda;D:\Anaconda\Library\mingw-w64\bin;D:\Anaconda\Library\usr\bin;D:\Anaconda\Library\bin;D:\Anaconda\Scripts;D:\Anaconda\bin;D:\Anaconda\condabin;D:\Programs\cudainstall\bin;D:\Programs\cudainstall\libnvvp;D:\Programs\CUDA11.6\Development\bin;D:\Programs\CUDA11.6\Development\libnvvp;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.6\bin;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.6\libnvvp;D:\Programs\python\Python\Scripts;D:\Programs\python\Python;D:\Programs\Compiler\java\java\bin;C:\Program Files\Common Files\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0;C:\Windows\System32\OpenSSH;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\Docker\Docker\resources\bin;C:\Program Files\dotnet;D:\Programs\Compiler\MinGW\MinGW\bin;D:\Programs\Git\Git\Git\cmd;D:\Programs\vcpkg\vcpkg;D:\Programs\CMake\CMake\bin;D:\Programs\zookeeper\apache-zookeeper-3.8.1-bin\bin;C:\Program Files\MySQL\MySQL Server 8.0\bin;D:\Programs\Doxygen\doxygen\bin;D:\Programs\MangoDB\bin;D:\Renk\Study\Mujoco\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0;C:\WINDOWS\System32\OpenSSH;D:\Programs\NodeJS\nodejs;C:\Program Files\NVIDIA Corporation\NVIDIA App\NvDLISR;D:\Anaconda\Scripts;C:\Users\86193\.conda\envs\gaussian_splatting\Lib\site-packages\torch\lib;C:\Program Files\NVIDIA Corporation\Nsight Compute 2025.1.0;D:\Programs\ffmpeg\ffmpeg-master-latest-win64-gpl-shared\bin;C:\Program Files\Go\bin;D:\Programs\Nsight\Nsight System\NSYS\target-windows-x64;C:\Users\86193\.local\bin;C:\Users\86193\AppData\Local\Programs\Python\Launcher;C:\Users\86193\AppData\Local\Microsoft\WindowsApps;D:\Programs\IDEs\vscode\VSCODE\Microsoft VS Code\bin;D:\Programs\WebStorm\WebStorm 2024.1\bin;.;C:\Users\86193\.dotnet\tools;C:\Users\86193\AppData\Local\Programs\cursor\resources\app\bin;C:\Users\86193\AppData\Local\Programs\Ollama;D:\Programs\MangoDB\bin;C:\Users\86193\AppData\Roaming\npm;C:\Users\86193\go\bin;D:\Clion\CLion 2025.3.3\bin;C:\Program Files\NVIDIA Corporation\Nsight Systems 2026.4.1\target-windows-x64;.;c:\Users\86193\.vscode\extensions\ms-python.debugpy-2026.6.0-win32-x64\bundled\scripts\noConfigScriptsÚ
+ProgramDataC:\ProgramDataÚI
+RIDER_VM_OPTIONS5D:\Renk\resource\wjb\jetbra\vmoptions\rider.vmoptionsÚO
+RUBYMINE_VM_OPTIONS8D:\Renk\resource\wjb\jetbra\vmoptions\rubymine.vmoptionsÚ
+SESSIONNAMEConsoleÚK
+STUDIO_VM_OPTIONS6D:\Renk\resource\wjb\jetbra\vmoptions\studio.vmoptionsÚ
+SystemDriveC:Ú
+
+SystemRoot
+C:\WINDOWSÚ)
+TEMP!C:\Users\86193\AppData\Local\TempÚ(
+TMP!C:\Users\86193\AppData\Local\TempÚ
+
+USERDOMAINRENKÚ!
+USERDOMAIN_ROAMINGPROFILERENKÚ
+USERPROFILEC:\Users\86193Ú'
+VIRTUAL_ENVD:\projects\newton\.venvÚ
+VIRTUAL_ENV_PROMPTnewtonÚ%
+ VSCODE_PYTHON_AUTOACTIVATE_GUARD1ÚK
+WEBIDE_VM_OPTIONS6D:\Renk\resource\wjb\jetbra\vmoptions\webide.vmoptionsÚ5
+WebStorm)D:\Programs\WebStorm\WebStorm 2024.1\bin;Ú
+ZES_ENABLE_SYSMAN1Ú
+windir
+C:\WINDOWSÚ
+TERM_PROGRAMvscodeÚ
+TERM_PROGRAM_VERSION1.135.0Ú
+LANGzh_CN.UTF-8Ú
+	COLORTERM	truecolorÚ®
+ VSCODE_DEBUGPY_ADAPTER_ENDPOINTSÉc:\Users\86193\.vscode\extensions\ms-python.debugpy-2026.6.0-win32-x64\.noConfigDebugAdapterEndpoints\endpoint-8caa9779e338fe8b.txtÚà
+PYTHONSTARTUPwc:\Users\86193\AppData\Roaming\Code\User\workspaceStorage\583b3a87829bfc9117e4aab6bf14e557\ms-python.python\pythonrc.pyÚ
+PYTHON_BASIC_REPL1Út
+GIT_ASKPASSec:\Users\86193\AppData\Roaming\Code\User\globalStorage\vscode.git\askpass\70789581cae28aa7\askpass.shÚT
+VSCODE_GIT_ASKPASS_NODE9D:\Programs\IDEs\vscode\VSCODE\Microsoft VS Code\Code.exeÚ!
+VSCODE_GIT_ASKPASS_EXTRA_ARGS Ú<
+VSCODE_GIT_IPC_HANDLE#\\.\pipe\vscode-git-4de9d7ec7d-sockÚ
+VSCODE_INJECTION1Ú+
+
+_CONDA_EXED:\Anaconda\Scripts\conda.exeÚ
+_CONDA_ROOTD:\AnacondaÚ"
+__CONDA_OPENSLL_CERT_FILE_SET1Ú
+
+LD_PRELOAD{}Ú 
+IS_PROCESS_PROFILED_BY_NSYS1ÄC∏‡ Í$a8186608-b01c-4469-84fb-8267fb054378Ú Ç ‚   ( 8 J RX ` x àÃ»ñôóÛ&êƒ⁄áπóÛ&òÂåπãïÛ&“ P“1P“ P“ P “DlaKmdTraceP“ P“2P“ 1P⁄ºìÄÄÄÄÄÄ@⁄®^ÄÄÄÄÄÄ@⁄‘™ÄÄÄÄÄÄ@í §èj(Jlz4P`jÄÄÄÄêÄ@ jÄÄÄÄ†Ä@j5ÄÄÄÄ∞Ä@"'
+EventProvider2mm_"MM_( 2NvMediajÄÄÄÄ¿Ä@	jÄÄÄÄ–Ä@
+jÄÄÄÄ‡Ä@jÄÄÄÄÄ@rÑÄÄÄÄ∞Ä@) *
+uint32_t%xEngine class ID@&*
+uint32_t%uSyncpoint ID@7*-
+uint32_t%uThreshold for task completion@*
+uint32_t%uPID@*
+uint32_t%uTID@*.
+,Marks that the task is submitted to hardwarex ôN≤ˆÙØˆ
+(0‚#î÷´¯™≠“? ‡±(‘™08@@ h‡±Ç†’í@* ∏®Ë’¢ﬂ◊* C* ø˛ﬂ†ê∂®Ÿ* ø»ƒπê€Ω€* øΩ˜ÀïÒœ›* ø∆ç·ß‹Âﬂ* øÁ°˘í¯˝·* ø˜˘õ◊≠¶„* «ŸÍ˚›ëÄã@P& ø∫ﬂãÙ∫éç* ø˛™«Öı Œ* øâç‘ﬁπ÷–* øê Î‚üÓ“* øœÈ˚≠˘˝‘* øÿﬂáó›â÷* ∏ïÿã˙›çŸ* UL∏¶çè¯ëè€* V* |˜’èàÓ* T  ∂ªÄ∂òıø’Œ> 8AT øäÔ¨°Å∂Ê* ø≤¶∏Ü‘ºÈ* øﬁ˚Ω»˜øÏ* øºˆ¿ ç√Ô* øâïƒ“Â≈Ú* ø’Î∆÷º ı* øøÿÀ¸âŒ¯* ø…ëœ‰«—˚* øŒ»“∏Ê‘˛* ∂ùÍ’ﬁÕ◊Å¯§øØ¡ÿèÆ‹Ñ* øÍ¸‹ﬂ´ﬁá* ∏á√‡⁄í„â* J"∏çäëÃÀìê* A* ø⁄ΩîÁ–ïì* ø´¢ñ¢ÿóñ* øﬁ¨ò⁄ÿôô* ø‚ßö⁄Õõú* øÉòú÷Ÿùü* ø∏®û”Å†¢* øÌ‡†Ûâ¢•* øñÈ¢·∞§®* øËÄ•óö¶´* øƒÂ¶ë€ßÆ* ø®ù®¬è©±* ø⁄◊©˜Õ™¥* øûì´¡ï¨∑* ø≥⁄¨∏€≠∫* ø∂¢ÆÏüØΩ* øÊØ≈›∞¿* ø˜ß±‡í≤√* ø‰÷≤ÛÍ≥∆* ø€±¥°Ωµ…* ∏® ∑∆ë¿Ã* OH∏ôïã´Øã◊* T* 
+%⁄   Ã
+  (08@ÄÄÄ–òH “' /ô' ' ü' ' ∑' ' Ω' ' √' ' …' ' œ' ' ’' 	' €' 
+' ·' ' Á' ' Ì' ' /Œ‘' ‘' ' /¯N ' ˛' ' /ÑN ' ä' ' ê' ' ñ' ' ú' ' ¢' ' ®' ' Æ' ' /è8' ï' ' /∂N ' …' ' œ' ' ’' ' Ò'  ' ˜' !' ˝' "' /É#' ù' $' £' %' ©' &' Ø' '' /ä$√ 8(' å' 8)' í' 8*' î' 8+' ö' 8,' ú' 8-' ¢' 8.' §' 8	/' ™' 8
+0' ¨' 81' /Â,Ü82' Á' 83' Ì' 84' Ô' 85' ı' 86' ˜' 87' /æ-Í 88' ¿' 89' ∆' 8:' »' 8;' Œ' 8<' –' 8=' ÷' 8>' ÿ' 8?' ﬁ' )¿	‡' 8AN Ê' 8B' Ë' 8C' Ó' 8D' ' 8E' ˆ' 8 F' ¯' 8!G' ˛' 8"H' /Ä.ó8#I' è' 8$J' ë' 8%K' À' 8L' —' M' /¨/√ 8&N' Æ' 8'O' ¥' 8(P' ∂' 8)Q' º' 8*R' æ' 8+S' ƒ' 8,T' ∆' 8-U' Ã' 8.V' Œ' 8/W' ‘' 80X' ÷' 81Y' ‹' 82Z' ﬁ' 83[' /’0"84\' ◊' 85]' ›' 86^' ﬂ' 87_' Â' 88`' Á' 89a' Ì' 8:b' Ô' 8;c' ı' 8<d' ˜' 8=e' ˝' 8>f' ˇ' 8?g' /Ö1‘8@h' á' 8Ai' ç' 8Bj' è' 8Ck' ï' 8Dl' ó' 8Em' Ã' 8n' “' o' /Õ>88Fp' œ' 8Gq' ’' 8Hr' ◊' 8Is' ›' 8Jt' ﬂ' 8Ku' Â' 8Lv' Á' 8Mw' Ì' 8Nx' Ô' 8Oy' ı' 8Pz' ˜' ÒQ{
+yO⁄tﬁ√‡æÏ‡o√√ˇY™R*B*@*PX`hÄpxÄÄà ê òÄÄ‡†À	®H∞ÄÄ∏ ¿ – ‡ ¯ Ä à ê ò † » 
+zO⁄u∫È≠∫êÆŸ{ ¬S+D+@+PÄ| | | ﬂ!†Ã	®ˇ∞Ä@| ˜ ÅŸ–√˘Ì√˜ ,E,@,˜ ü∞†Õ	® ˜ { rÿÊœ∏˜c{ í-F-@-Pˆ r_Œ	®%{ r◊»Â∑›¥{ .G.@.{ _œ	®@{ Ìêµﬂ˝ï‚Ç{  øS/H/@/PÄ˜ ü††–	®íÌÅì¨•Û¡•W|  øR0I0@0Pr
+—Ì˜ ÅÓçÄ≠∫ï®{  üS3K3@3˜ _€	®È˜ ÅÌ ï≠ﬂï˙|  üR4L4@4Ó_‹	®8ÓwVíräª¿Í√g{  õPMN(@M_ Ÿè†Ê	®ÿrÍÓ Í˝ƒy  üR6P6@6Î_Á	®Ù ÿÅâ€÷…ºÿ{ 7Q7@7{ _Ë	®0{ fê®µÓß Ñf{  üS:R:@:f_È	®˙fêßŸÑ«ÛÑ∏|  üR9S9@9f_Í	®ó{ Å¶áäÊúä	 { ·Î·Ú 8é⁄2≤„–˜ª| 8Ò≤ÄÄ` (Äà
+1P⁄,†ä»†ó» 9 9 ≈∫
+ÄÄ  @3 Åí◊µÚ·µ 3 rÚ◊ºí‚( 3 f 0ô °+“•¿≤©¿1 3  J	Ä2 rë±√—¥9 2   d Å—î∆Òó∆A 2 ñ /r±√ ÒŸI 2   /`ó 3 r—ØŒ±ÃR 3 ÅÒË—±è“[ 3 Å±Ü’®’d 3 ˛ ÅêÉÿêéÿm 3  C	†À 2 r∞ﬁ‹êÈu 2 +‡]2 bÈﬁ∞Ù} 2 / çÒ'!¸ï[ 2   b«/+°*Õáñçãñd 3  3ñ d qíò≠úòk 1  d 3 ÅÕîöÌûöt 3 ÅÌçúçòú} 3 Å´ûµ´©µÜ 3 í˝  Î∑3 !ªµè 3  :˝ Åã»µÀ”µñ 1  ˝  ÅÀ‡µÎÍµü 3 ó + ÀÙó !¯µ® 3  øÅ´Ç∂ÎÖ∂∞ 2 ¯d ÅÎè∂ãì∂∏ 2 ñ ÅÎù∂´§∂¿ 2  ÀÆñ !±∂» 2  Îªd !ø∂– 2  À…» !Õ∂ÿ 2 Åã◊∂À⁄∂‡ 2 ÅÎÔøã¯øË 2 ÌÅ™á¿äí¿ 2 Ì  £2 !Æ¿¯ 2 Ù9j⁄4ÁíñÁ¸ˇˇˇˇ•≥ "Õæ 68äî  ; Cˇ’ù˘; $’˜ "ö%;  ; 4ê›´; $⁄Ë /†; ; 4™Üª; $ôì /∏; ; 4Òü»; $—® /æ; ; 4 òÃ; $Ωü /ƒ; ; 4ÛÚ–; $¯ / ; ; 4Í˙”; $Éˇ /–; ; 4ê·Ÿ; $ÛÊ /÷; 	; 4‡÷ﬁ; $õ› /‹; 
+; 4···; $èÊ /‚; ; C“ßª˝N$ë√ /Ë; ; 4œÅ∆; $Øã /Ó; ; R’€Ìè˝ˇ$⁄ˆ "œõ!ƒ ; 4ñÉı; $åé /’; ; CËéÊëv $˜§ "˘√!v  ; 4ÈÏÏ; $ù˜ /ˇ; ; 4ÑÀ; $Å“ "Ö!v  ; 4é‰ı; $¥Í /ã; ; 4áõ˘; $È† /ë; ; 4≈ﬁˇ; $¶Â /ó; ; C±ÙÉíb$Ö˙ /ù; ; 4ıºá; $ﬁ¬ /£; ; 4Ëõç; $ £ /©; ; 4òÔê; $⁄Ù /Ø; ; Càﬂ§Ï $¯¶ 1êòÿ ; 4ÔÉÊ; $èé /ñ; ; C•œÏ◊v $óÂ ?∑v ; C¥◊öÿ; $ı„ / ; ; 4ÿ∫†; $Óƒ /–; ; 4ùÕÆ; $≠’ /÷; ; 4íÒ˜; $·˝ /Ú;  ; 4â∑˛; $Ñ¿ /¯; !; Cô´ÉŸ'$†± /˛; "; 4ƒÇà; $◊ä ?Ñù#; 4å¬¬; $‘Õ /û; $; 4‰Î»; $–Ù /§; %; 4æ…Õ; $¢– /™; &; 4›˙—; 3•Å“ /∞; '; CæΩ›b$˘— "Ã': L; 4é¶Â; $∞∞ /“; M; CŒ˘úÚv 3¥áù "Õov  n; 3ôƒ¢0 4µŒ /”; Po 
+EÈ	T@à≥ø∞3èÖ¡ "†N Ì	!  $ G 3ò∏Í< C••Î /¥G 4∞Âñ3Õ›ô /«G 3 ∂ˆ< 5ÊâôÔG 3ñË≤8CÈ‘¡ "õC3ΩÕ‚< 4ÿÛ /∂G 4„Î˛G 3ï¨ˇ /¡G $Ï€< 4…· /ƒG CÂÙñ⁄Æ3ö†ó /œG $ˇº< 4ô¡ /“G 3º˜ØÉ C‰†∞ /›G $≥º< 4Ω¿ /‡G 3£»∆É 4ÀÔ /ÎG 4˛à«G $¢ç /ÓG 4åŒ‹G $øı /˘G 4ﬂè›G $˜ì /¸G 4ç∏ÚG $Îﬁ 1áÉT$Éˆ< 4à˙ /äG C€◊à€∆$œ˚ /ïG 4ÂíâG $‘ñ /òG 4∞îüG $Õª /£G $‚–< 4Å’ /¶G 4é∫µé $øÌ /±™4øã∂G $¯ë /¥G 4ü¢ÃG $Â  /øG $æ„< 4ÈÁ /¬G 4¢ Âé $™Û /ÕG 4ÖçÊG $Äë /–G 4üµ˚G $Ω⁄ /€G $ÁÚ< 4â˜ /ﬁG C‡‘ê‹T3“â≠ /ÈG $¬©< 4íÆ /ÏG 3ˇÙ√É Cûûƒ /˜G $Éµ< 4Ô∏ /˙G 3¯ÈŸÉ CÊè⁄ ?ÖT$©ß< 4±´ /àG 3ôªÔÉ 4•‡ /ìG $Üˆ< 4ÿ˘ /ñG C⁄≥Ö›8$ÿ⁄ /°G $•Û< 4ì˜ /§G 4óÅõé 3ˇ»ú /ØG $”›< 4ﬂ· /≤G 3“Ú±É C¡ñ≤ /ΩG $Œ≤< 4˝∂ /¿G 3¢Ú«É C’ñ» /ÀG 3©–À< 4Í‡ /‘G 4ÌóÿG 3õ°€ /›G 3Äë›< 4æ  /ÊG 4û™ËG 3–ÄÎ /ÔG 3·ÊÏ< 4ÃÌ /¯G 4ô¡˜G 3Òå˙ ?Åp3†Ê˚< 4ŒÒ /äG C∞ŸÜﬁ‚3 ÿâ /ìG 3¢¡ã< 4ÖÒ /úG 4ä¨ñG 3´Öô /•G 3Î€ö< 4∑Â /ÆG 4—¸§G 3¡⁄ß /∑G 3òÆ©< 4Óµ /¿G 4œà¥G 3Î„∂ /…G 3 æ∏< 4À« /“G 4€·¬G 3ã¬≈ /€G 3Øî«< 4âù /‰G 4ÌÛ—G 3†Ã‘ /ÌG 3ùù÷< 4¨ß /ˆG 4ÁÙ‡G 3†‘„ /ˇG 3÷æÂ< 4Ã» ?à)$“ÛG 3∏Ûı /ëG 3Ç˚˜< C÷∑¯ /öG C—◊Çﬂp3≤≠ö /£G 3€≠ú< 4¬µ /¨G 4œ∞ßG 3˘µ© /µG 3˝†´< 4·© /æG 4ﬂõ∂G 3è¢π /«G 3¯Éª< CˇØ… /–G 3ìô‘< CÍ°◊ /ŸG 3∂ÇŸ< 4ﬂâ /‚G 4÷¨„G 3«ïÊ /ÎG 3ÆâË< 4Èì /ÙG 4è≤ÚG 3Ωñı /˝G 3€‡ˆ< 4ËÙ ?Ü ‚C≥◊Å‡T3Â±Ñ /èG 3ƒäÜ< 4ì /òG 4±úêG 3¡˝í /°G 3Ã„î< 4¯Ï /™G 4ô©üG 3õÖ¢ /≥G $å≈< 4ñ… /∂G #ä◊É CÖ‹Ÿ / G $Ô˜< 4£˛ /ÕG 3ƒû˛É RÒÄÅ·C/·G $◊†< 4«ß /‰G 3≤ç¶É Cë˘ß /¯G 3èö®< 4ıü /˚G 4µ¢ G 3ÅÂÃ ?è!õ$Úˇ< D„ÑÕG íG 3ÅÄÓ< C˙Ÿ /¶G $°ı< 4√˙ /©G BÄùî‚-Cì‰ñ /ΩG $›˝< D•ÇóG ¿G 3„‹∑< C∂„∫ /‘G $ü˚< 4Úˇ /◊G 3ò∆‹É Cè†ﬂ /ÎG $¶∏< 4¯Ω /ÓG CöƒÅ„™3ÙûÑ ?Ç"∆$π∫< 4ûø /ÖG 3©á™É C√∑¨ /ôG $’÷< 4Ö› /úG 3¡∫œÉ CÁ„— /∞G $Ù¸< DıÅ“G ≥G 3îÆÙ< CÃÉ˜ /«G $√§< 4Ô© / G C∞ô‰83ê˚õ /ﬁG 3’ïú< 4Ûô /·G 4ª¡¡G 3ÖÓ√ /ıG 3›îƒ< 4¡ú /¯G 4ñÓÁG B«ÙÄÂ'?å#T3ÍóÅ< 4Æù /èG 4≥Ü£G 3‚ˆ• /£G 3µê¶< 4ˆî /¶G 4ÚÈ«G 3…¡  /∫G $§›< 4Ç‚ /ΩG 3æÛÌÉ C‚ø /—G $Û⁄< 4®‡ /‘G BíìîÊ-C⁄¡ñ /ËG $èÂ< 4ÚÍ /ÎG 3öºªÉ C⁄¸Ω /ˇG 3ﬁ¥ø< 4éΩ ?É$4ÇÁÂG 3˙≤Á /∞G 3€˙Ï< C˝ÑÌ /√G CôîÇÁ™3’øí /ÃG 3∑™ö< 4ãÍ /ÛG 4À˚üG 3“ò† ?ö%c3ÁöØ< C˙–¿ /£G 3ÇÃ»< CÕÑ… / G 3ˆ”÷< C¨∞Á /”G 3ö‚Ï< Râ∑ãËµ/˙G 3¨ºò< C”≤™ ?É&c3˜ˆØ< C“—≤ /™G 3ƒÊø< C‘¸– /≥G 3∆ü◊< 4È∞ /⁄G 4√¸„G 3¢ﬂı /„G 3ëØ¸< 4ÎÍ ?ä'cB“„âÈÊCüˇõ /ìG 3Åà°< CÏ˛¢ /∫G 3ç¥Ø< C‘“¡ /√G 3ÌÄ…< 4Üã /ÍG 4Íã’G 3àØÊ /ÛG 3»ßÏ< 4ôπ ?ö(™4¶Ú˙G B»ÚãÍµ/£G 3¨¥ë< 4Î / G 4Ú®ûG 3œ˛Ø /”G 3˜˙∂< Cå™∑ /˙G 3’∂√< CáÉ’ ?É)c3‹ÿ⁄< C∂ƒÓ /™G 3÷Üˇ< SÜ™ëÎ™≥G 3´˘ñ< Cáó§ /⁄G 3íá±< C≤¢√ /„G 3Œ∞»< 4¬“ ?ä*c4íÑ’G 3›ïÊ /ìG 3—˙Í< C÷áÓ /∫G 3È˛˘< SæÊãÏ™√G 3‡Àë< 4‡¸ /ÍG 4ÙÍùG 3Ï¶Ø /ÛG 3˜°¥< CáÃ∂ ?ö+™3®¥√< C¥Ÿ‘ /£G 3Ï±€< 4î¬ / G 4„˜ÁG 3Æ—˘ /”G B≈ËÄÌÊCˆäÅ /˙G 3Üπç< CÌ…ü "ÉæPQ.3ôª§< CÀ‘¶ /™G 3ﬂÆ≤< Cïœƒ /≥G 3Ü¯…< Cëöﬁ /⁄G 3Ïüﬂ< 4¡• /ﬁG 4°»ÓG B÷√ÄÓµ/˚G 3«ÂÖ< 4¨Ó ?à-4˘…ãG 3˚±Ø /ØG 3ÄÄ±< C‚Ïº /∂G 4˝ÒÅÅ13°ÿÇ "ïÅ13öµÜ< 4óø /∑G 4çƒ∑G 3õµ‹ /…G 3“∞˜< 4†Œ "†ñN’ 4 …¯G $¸œ /§G BƒòúÒtC§€¨ /‚G 3˚ˇØ< CËà∞ /˚G 3°…ª< Càäº "∆ﬁM3≤ÆΩ< 4ˆ≥ /ÕG 4˙ÃÓG 3≠¬Ô "õä3é 3‚ÏÚ< 4ÊÚ /∫G 4Ôπé4$Èè^4/ G 4£∏πG 3ΩıΩ ?ï2)3 ù»< C›Œ  /‘G 3⁄Ê< CÙÀÙ /‰G 3†∂ˇ< 4Ãÿ ?£3’ Cã“ñÛ3π€§ /≥G 3”åØ< 4’ô /ÚG 4´Ê∆G 3ßÇ‘ ?Ç4’ 3ú˚›< C◊ªﬁ /¡G 3Œßˆ< R∞°ÉÙ'/—G 3˙Àì< CÓãî ?ê5’ 3é‹™< C‚ôπ /†G 3‚∂ƒ< 4æ‡ /ﬂG 4Âû‹G 3˜‘Í /ÔG 3Ö·˜< 4ÇÓ ?Æ6Bç éıüCÔˆú /æG 3ëú™< 4ê“ /˝G 4ï¨¡G 3—†– ?ç7’ 3ÿ ÿ< C‹Èﬁ /ÃG 3õ ı< R≤ŒÉˆ'/‹G 3±¯ê< C”ìë ?õ8’ 3¿‰ß< C∂à∂ /´G 3ú·Ω< CêÕ« /ÍG 3‘√ﬂ< Cú§Ì /˙G 3ÀÑ˝< 4ÖΩ ?π9B≠∞ï˜üC¡‡¢ /…G 3Á˛≠< CåÆ ?à:é 3Ü—≈< C·â” /òG 3√›‡< 4¶Ó /◊G 4™Ω¯G Bœ»Ü¯'/ÁG 3∫§ê< C≥úì ?¶;3¿ñ©< C˚’∂ /∂G 3∆»¬< 4¿Û /ıG 4‘∫ŸG 3¶èÁ ?Ö<’ 3¥˘< CõüÒ /ƒG Bá›á˘üCÌ◊ï /‘G 3œ¥£< 4Ú¯ ?ì=’ 4ÚÊ∫G 3ﬁ∞» /£G 3¡““< CÓÑ’ /‚G 3ŸíÎ< CÉ¯ /ÚG CÂÜÜ˙c$›ï "±W¶4Û¬üG 3‡ö≠ /¡G 3ΩªÆ< 4é¬ /≈G 4íØÃG 3–Åÿ /˚G 3˘°‹< 4ù™ "ëºN4¢éÁG $˚´ /–G 9ü@í4ÿãó€öq ∫JÇ ; rÂ÷èùÌÅq; Û41Ú/
+ "Profiling has started.(Ä @˛
+76 è2
+	¯ëÒ9 ;opp9 N9 êI
+¸õªû€ ? Ò"*Process 35260 was launched by the pö  erå `‡õë@
+VP ñQ
+µ∏„£ÛP "2Common injection library initialized sucu Qfully‰ 
+X Oø¬«˙X 37¿ÚÖ∞ _ ›÷üÙ∞ 2p†’í@
+´	™•
+Ì˙ò©˙Z ‡ÖBuffers holdŸCUDA trace data will be fluspron Cuda
+ÒerStop() call. See --* Ñ-on-cudaòÒstop to control this behavior^Æ ôÆ ìÆ KùäÑæÆ ‘tLoaded CUPTI¥: C:\Program Files\NVIDIA Corpora·,\Nsight Systems 2026.4.1\target-windows-x64\cupti64_129.dllRú JI|E
+è°±ö Q&Enab;Ûfor device graph∞L LL ãG
+‡¬ΩƒÊ (Éúî
+ö N Å	¨ÇºÆ±".Not all P Åevents mÛhave been collectçN Dú e?
+	åÆN …"&Number ofP @ u: 	103.‚ hF Åc
+	ı˛®  zJ8 i>A due	UÒart API invoked inÊaapplic“j ì4ïç
+	›ﬂõ l t¯ Åhardware‘ x ¿is not suppoø  o\ Ais sÒ. A legacy (soft< —instrumented)J eÜ˛ " "eaFX ÖS
+	±Ãÿ"î :F ≈óaproducFS6045,„bùF: 50 )zE$ˆå: t0
+8 @ hÖ + pÕ¨í   ˜ö∂è≥÷  08<Æq! ëﬁˆë˚ß! qW@h†êÇÊ ! ÇäÉ®¸ß®! <;@! ÇŒº®¯€≠! B  ÇÅ„›ÊÏ‚! <X@ B ë‡ÊÄéÄêÑ ∞X@ h†êÇ†’í@õŸ(Ù◊(
+
+GpuMetrics
+
+Soc mm_
+task_submit
+class_id
+	syncpt  Ú'thresh
+pid
+tid
+GenericCounters
+FTrace
+ETW
+DlaKmd ë[NSys]
+ í Comms]
+ 	stream redirect]
+main
+ Ú(2
+tokio-runtime-worker
+CUDA profiling started
+CUPTI &  ≥ Ù.ad
+7compute_shape_local_bounds_e66b6bb1_cuda_kernel_forward
+39 renabledA Øs_70ba08e95 ;5 n ˇ	world_transforms_47e1714= 5= 4bvh© è5cdd8bf7t Û _ZN2wp13memset» rEPiiy
+; $205tot ÛEPKNS_5vec_tILj3EfEES3_PS1_S4_i
+:= 
+= èinv_edge@ 	#
+A< y Ømorton_cod9 @iS3_Ä 7iPyPKi
+Ó_ZN3cub64CUB_200802_SM_520_600_610_700_750_800_860_890_900_10 2 Ò1031DeviceRadixSortSingleTileKˆ‡INS0_6detail5r& 10policy_hubIy116 ÒPayloadILi4EEjE10P#  l ELb0EyS6_jNS2_21identity_de{Úoser_tEEEvPKT1_PSA_PKT2_PSE_T3_iiT4_
+!4 182  ≥ ke@ 0ltakcyPii
+O# ø2build_leavOÛPKiPiS6_PNS_17BVHPackedNodeHalfES8_
+LQ 5Q ¡hierarchyEiP@ †KyS0_S2_PVJ  M VN B9_
+HN Å22mark_po  • 1f_n¯ S  ^ 1_– I T5_i
+4 ˇgroup_roots_a4d4455c:rparticl? Óèaf1b7974: ·m80müHistograml:i _ m SA`O3_
+∂‰ 83‰ øExclusiveSuÁ 6j/_T0_
+˛π 7+29π èOnesweepú: /ii
+T5_SB_PT3_PKSC_PBKSG_∫PSK_T4∫6_
+#_Z20memtile_valuˇ rnelIxEvPT_S0_y% i% @8_Z2)J D 2_byT `ILy256upv9FillVi ïIXT_EEyy
+ €Ôaabbs_0b8af2d6Tıhcreate_narrow_phase_primitiv~ ì/s_' è3b009710j z8verifyC ˇ buffers_77619ee=Û
+<rigid_contact_kinematicsGè_f6a2bd9x 1.evN%dyB 2a5ebe0f=0 ù9 ﬂfused_073335f? p0integrTD üs_97f94e2É1ÉDsoft£ üs_0f95c36D7§ èabaad752Ö2l Abacke	="? 3ˇ_velocity_loss_f5529248® 45 k 1|3 8J: /: X1 >1 Ÿ 	: Y@ ´Unknown
+-\‡data flush on (PxÒerStop
+JIT Cache Load
+Lazy Function bing
+ R¬Ú Triggered Modul6  " 6cuY Part
+l M“
+AÖÑ_v3020
+#ÜÚ _1...
+cuLaunch’#
+#öâ _25 #D!_3% ∞!_4% ç	Ñ&_5% ≤!_6% u _7% *:cpy*~˚ _8< – 9% d<void 5Ò<int>(T1 *, T1, unsigned long ?)
+9  
+ﬂ•Ö_v7000
+$“0_10í $1$àQ 	ëQfus_1¯& 	 	Æ1˘∞ S≠–IsCapturing_v¸0
+cuCtxSynchronizeÉ–Bop
+úBîQ†
+Chunk Alï 0
+tC:/Users/86193/AppData/L∂–/Temp/nvidia/i
+ht_systems/quadd_session_ÁB012/]ˇs/stdout_29d6-7f70-c918-4ab3.log
+ x H?errx aYC:/PrÒ Files/NVIDIA Corpor!/NÈ " SÈ Ú 2026.4.1/target-windows-x64/config.ini
+}  haf". 0opp Ò*Process 35260 was lBìed by thep@er
+2¬ron injeÁlibrary initialized sucQ ífully.
+Ö˙`s holdó ht3drwill be ednCnÒ () call. See --E@-on-õpñÄstop to —rol this behavior.
+t¶2ed é∏ Y: C:\â\â\â\â\cupti64_129.dll
+&EC ˆ Ò Qfor dëc graphl!
+(XPJ‡‹A due˘ 	5Òart API invoked inÃRapplit1.
+tv Åhardware£  ´ ¿is not suppo_ íNt¿. A legacy (c< —instrumented)J eLqcollectÅ Ûstead.
+:Number ofç`eventsg”duced: 	6045, Õ
+Ò : 50.
+.Not all ∫ 9 m(ñhave beent 8.
+&l 2 " ˜: 	103.ÄÄÄ‡õë@YZ [ ÄÄÄÄ@\Z‡
+
+ ¨ˆÄ¿ÚÖ@
+
+ êÏÅ¿ÚÖ@
+
+ ‘ãÇ¿ÚÖ@
+
+ ÃØÇ¿ÚÖ@
+
+ ‹ëÄ‡õë@
+  ‰úÄ‡õë@
+
+ »ŒÄ‡õë@
+
+ ∏ÑÇ‡õë@
+
+ ¸áÇ‡õë@
+  ÿ£Ç‡õë@
+  ¿≥Ç‡õë@
+
+ †êÇ†’í@
+
+ êßÇ†’í@
+
+ ‘ÆÇ†’í@
+
+ –∞Ç†’í@
+
+ ¯≤Ç†’í@	
+óÄÄÄÄÄÄ@å:øMicrosoft Basic Render Driver  *$00000000-0000-0000-0000-0000000000000Ω”: H P X ` h p x Ç ä ê ò † ® ∞ ∏ ¿ » – ÿ ‡ Ë  ¯ Ä à ê ò † ® ∞ ∏ ¿ » – ÿ ‡ Ë ¯ Ç :ƒ"NVIDIA GeForce RTX 3070 Laptop GPU  *$00000000-0000-0000-0000-0000000000000◊Ê: H P X ` h p x Ç ä ê ò † ® ∞ ∏ ¿ » – ÿ ‡ Ë  ¯ Ä à ê ò † ® ∞ ∏ ¿ » – ÿ ‡ Ë ¯ Ç :á "NVIDIA GeForce RTX 3070 Laptop GPU0000:01:00.0 *$4656faba-16cf-fad1-a5f1-61c588aa7e030≈§:GA104H PÄÄÄXÄÄ‡ˇ`Ä†»ïÖhÄÏÓÁp(x Ç ä êÄò † ®°∞∏ÄÄ¿»ÄÄ–ÄÄÿÄò‡Ä†ËÄÄ ¯Ä0àêÄòÄ†Ä®@∞ˇˇˇˇ∏ˇˇ¿ˇˇ»–ÿ‡Ë ¯ ÇAmpereà :ƒ"NVIDIA GeForce RTX 3070 Laptop GPU  *$00000000-0000-0000-0000-0000000000000©Á: H P X ` h p x Ç ä ê ò † ® ∞ ∏ ¿ » – ÿ ‡ Ë  ¯ Ä à ê ò † ® ∞ ∏ ¿ » – ÿ ‡ Ë ¯ Ç J0  ‘™*$4656faba-16cf-fad1-a5f1-61c588aa7e030(r  ‘™( 08 @ H P ` h p x r  ‘™( 08 @ H P ` h p x z  ‘™(0 8z  ‘™(0˚ˇˇˇ8z  ‘™(0 8z  ‘™(0 8z  ‘™(0 8z	  ‘™(0 8z  ‘™(0 8z
+  ‘™(0 8z  ‘™(0 8z  ‘™(0 8z  ‘™(0 8z  ‘™(0 8z  ‘™(0˚ˇˇˇ8z  ‘™(0 8z  ‘™(0 8
+lz4ãÒ
+¶A∏˜ÒªÖÛ&íöA
+ë>"ƒ=*¢= cudaGetLastErrorcudaHostGetDevicePointercudaSetupArgumentcudaConfigureCallcudaArrayGetInfocudaChooseDevicecudaCreateChannelDesccudaD3D10GetDevicecudaD3D10GetDevicescudaD3D10GetDirect3DDevicecudaD3D10ResourceGetMappedArraycudaD3D10ResourceGetMappedPitch!cudaD3D10ResourceGetMappedPointercudaD3D10ResourceGetMappedSize%cudaD3D10ResourceGetSurfaceDimensionscudaD3D10ResourceSetMapFlagscudaD3D10SetDirect3DDevicecudaD3D11GetDevicecudaD3D11GetDevicescudaD3D11GetDirect3DDevicecudaD3D11SetDirect3DDevicecudaD3D9BegincudaD3D9EndcudaD3D9GetDevicecudaD3D9GetDevicescudaD3D9GetDirect3DDevicecudaD3D9ResourceGetMappedArraycudaD3D9ResourceGetMappedPitch cudaD3D9ResourceGetMappedPointercudaD3D9ResourceGetMappedSize$cudaD3D9ResourceGetSurfaceDimensionscudaD3D9ResourceSetMapFlagscudaD3D9SetDirect3DDevicecudaDeviceCanAccessPeercudaDeviceDisablePeerAccesscudaDeviceEnablePeerAccesscudaDeviceGetAttributecudaDeviceGetByPCIBusIdcudaDeviceGetCacheConfigcudaDeviceGetLimitcudaDeviceGetP2PAttributecudaDeviceGetPCIBusIdcudaDeviceGetSharedMemConfig cudaDeviceGetStreamPriorityRangecudaDeviceSetCacheConfigcudaDeviceSetLimitcudaDeviceSetSharedMemConfigcudaDriverGetVersioncudaEventElapsedTimecudaFuncGetAttributescudaFuncSetAttributecudaFuncSetCacheConfigcudaFuncSetSharedMemConfigcudaGetChannelDesccudaGetDevicecudaGetDeviceCountcudaGetDeviceFlagscudaGetErrorNamecudaGetErrorStringcudaGetExportTablecudaGetMipmappedArrayLevel cudaGetSurfaceObjectResourceDesccudaGetSurfaceReferencecudaGetSymbolAddresscudaGetSymbolSizecudaGetTextureAlignmentOffset cudaGetTextureObjectResourceDesc$cudaGetTextureObjectResourceViewDesccudaGetTextureObjectTextureDesccudaGetTextureReferencecudaGLGetDevicescudaGLSetBufferObjectMapFlagscudaGLSetGLDevice%cudaGraphicsResourceGetMappedEglFrame+cudaGraphicsResourceGetMappedMipmappedArray$cudaGraphicsResourceGetMappedPointercudaGraphicsResourceSetMapFlags%cudaGraphicsSubResourceGetMappedArraycudaHostGetFlagscudaIpcGetEventHandlecudaIpcGetMemHandlecudaIpcOpenEventHandlecudaMemAdvisecudaMemRangeGetAttributecudaMemRangeGetAttributes-cudaOccupancyMaxActiveBlocksPerMultiprocessor6cudaOccupancyMaxActiveBlocksPerMultiprocessorWithFlagscudaPeekAtLastErrorcudaPeerGetDevicePointercudaPointerGetAttributescudaProfilerInitializecudaRuntimeGetVersioncudaSetDevicecudaSetDeviceFlagscudaSetDoubleForDevicecudaSetDoubleForHostcudaSetValidDevicescudaStreamGetFlagscudaStreamGetFlags_ptszcudaStreamGetPrioritycudaStreamGetPriority_ptszcudaStreamQuerycudaThreadExitcudaThreadGetCacheConfigcudaThreadGetLimitcudaThreadSetCacheConfigcudaThreadSetLimitcudaVDPAUGetDevicecudaVDPAUSetVDPAUDevicecudaWGLGetDevice__cudaInitModule__cudaPopCallConfiguration__cudaPushCallConfiguration__cudaRegisterFatBinary__cudaRegisterFatBinaryEnd__cudaRegisterFunction__cudaRegisterManagedVar__cudaRegisterSurface__cudaRegisterTexture__cudaRegisterVar__cudaUnregisterFatBinarycu64Array3DGetDescriptorcu64ArrayGetDescriptorcu64D3D10ResourceGetMappedPitch!cu64D3D10ResourceGetMappedPointercu64D3D10ResourceGetMappedSize%cu64D3D10ResourceGetSurfaceDimensionscu64D3D9ResourceGetMappedPitch cu64D3D9ResourceGetMappedPointercu64D3D9ResourceGetMappedSize$cu64D3D9ResourceGetSurfaceDimensionscu64DeviceTotalMem$cu64GraphicsResourceGetMappedPointercu64MemGetAddressRangecu64MemHostGetDevicePointercu64ModuleGetGlobalcu64TexRefGetAddresscu64TexRefSetAddresscu64TexRefSetAddress2DcuArray3DGetDescriptorcuArray3DGetDescriptor_v2cuArrayGetDescriptorcuArrayGetDescriptor_v2cuCtxAttachcuCtxDetachcuCtxDisablePeerAccesscuCtxEnablePeerAccesscuCtxGetApiVersioncuCtxGetCacheConfigcuCtxGetCurrentcuCtxGetDevicecuCtxGetFlagscuCtxGetLimitcuCtxGetSharedMemConfigcuCtxGetStreamPriorityRangecuCtxPopCurrentcuCtxPopCurrent_v2cuCtxPushCurrentcuCtxPushCurrent_v2cuCtxSetCacheConfigcuCtxSetLimitcuCtxSetSharedMemConfigcuD3D10GetDevicecuD3D10GetDevicescuD3D10GetDirect3DDevicecuD3D10ResourceGetMappedArraycuD3D10ResourceGetMappedPitch cuD3D10ResourceGetMappedPitch_v2cuD3D10ResourceGetMappedPointer"cuD3D10ResourceGetMappedPointer_v2cuD3D10ResourceGetMappedSizecuD3D10ResourceGetMappedSize_v2#cuD3D10ResourceGetSurfaceDimensions&cuD3D10ResourceGetSurfaceDimensions_v2cuD3D10ResourceSetMapFlagscuD3D11GetDevicecuD3D11GetDevicescuD3D11GetDirect3DDevicecuD3D9Begin	cuD3D9EndcuD3D9GetDevicecuD3D9GetDevicescuD3D9GetDirect3DDevicecuD3D9ResourceGetMappedArraycuD3D9ResourceGetMappedPitchcuD3D9ResourceGetMappedPitch_v2cuD3D9ResourceGetMappedPointer!cuD3D9ResourceGetMappedPointer_v2cuD3D9ResourceGetMappedSizecuD3D9ResourceGetMappedSize_v2"cuD3D9ResourceGetSurfaceDimensions%cuD3D9ResourceGetSurfaceDimensions_v2cuD3D9ResourceSetMapFlagscuDeviceCanAccessPeercuDeviceComputeCapabilitycuDeviceGetcuDeviceGetAttributecuDeviceGetByPCIBusIdcuDeviceGetCountcuDeviceGetNamecuDeviceGetP2PAttributecuDeviceGetPCIBusIdcuDeviceGetUuidcuDevicePrimaryCtxGetStatecuDevicePrimaryCtxReleasecuDevicePrimaryCtxResetcuDevicePrimaryCtxRetaincuDevicePrimaryCtxSetFlagscuDeviceTotalMemcuDeviceTotalMem_v2cuDriverGetVersioncuEventElapsedTimecuFuncGetAttributecuFuncSetAttributecuFuncSetBlockShapecuFuncSetCacheConfigcuFuncSetSharedMemConfigcuFuncSetSharedSizecuGetErrorNamecuGetErrorStringcuGetExportTablecuGLGetDevicescuGLGetDevices_v2cuGLSetBufferObjectMapFlags#cuGraphicsResourceGetMappedEglFrame)cuGraphicsResourceGetMappedMipmappedArray"cuGraphicsResourceGetMappedPointer%cuGraphicsResourceGetMappedPointer_v2cuGraphicsResourceSetMapFlags cuGraphicsResourceSetMapFlags_v2#cuGraphicsSubResourceGetMappedArraycuIpcGetEventHandlecuIpcGetMemHandlecuIpcOpenEventHandlecuLinkAddDatacuLinkAddData_v2cuLinkAddFilecuLinkAddFile_v2cuMemAdvisecuMemGetAddressRangecuMemGetAddressRange_v2cuMemHostGetDevicePointercuMemHostGetDevicePointer_v2cuMemHostGetFlagscuMemPeerGetDevicePointercuMemRangeGetAttributecuMemRangeGetAttributescuMipmappedArrayGetLevelcuModuleGetFunctioncuModuleGetGlobalcuModuleGetGlobal_v2cuModuleGetSurfRefcuModuleGetTexRefcuNNSetAllocatorcuNVNbufferGetPointercuNVNtextureGetArray+cuOccupancyMaxActiveBlocksPerMultiprocessor4cuOccupancyMaxActiveBlocksPerMultiprocessorWithFlags cuOccupancyMaxPotentialBlockSize)cuOccupancyMaxPotentialBlockSizeWithFlagscuParamSetfcuParamSeticuParamSetSizecuParamSetTexRefcuParamSetvcuPointerGetAttributecuPointerGetAttributescuPointerSetAttributecuProfilerInitializecuStreamGetCtxcuStreamGetCtx_ptszcuStreamGetFlagscuStreamGetFlags_ptszcuStreamGetPrioritycuStreamGetPriority_ptszcuStreamQuerycuStreamQuery_ptszcuSurfObjectGetResourceDesccuSurfRefGetArraycuSurfRefGetFormatcuSurfRefSetArraycuSurfRefSetFormatcuTexObjectGetResourceDesccuTexObjectGetResourceViewDesccuTexObjectGetTextureDesccuTexRefGetAddresscuTexRefGetAddress_v2cuTexRefGetAddressModecuTexRefGetArraycuTexRefGetBorderColorcuTexRefGetFilterModecuTexRefGetFlagscuTexRefGetFormatcuTexRefGetMaxAnisotropycuTexRefGetMipmapFilterModecuTexRefGetMipmapLevelBiascuTexRefGetMipmapLevelClampcuTexRefGetMipmappedArraycuTexRefSetAddresscuTexRefSetAddress_v2cuTexRefSetAddress2DcuTexRefSetAddress2D_v2cuTexRefSetAddress2D_v3cuTexRefSetAddressModecuTexRefSetArraycuTexRefSetBorderColorcuTexRefSetFilterModecuTexRefSetFlagscuTexRefSetFormatcuTexRefSetMaxAnisotropycuTexRefSetMipmapFilterModecuTexRefSetMipmapLevelBiascuTexRefSetMipmapLevelClampcuTexRefSetMipmappedArraycuVDPAUGetDevicecuWGLGetDevice 0 8 @ Jˇˇ R  Zÿ ‡: b“™≤Ú Ç 08@JLocal (CLI)RRENK¢$a8186608-b01c-4469-84fb-8267fb054378™1029012R¶C:\Program Files\NVIDIA Corporation\Nsight Systems 2026.4.1\target-windows-x64\nsys.exe profile -t cuda -s none -c cudaProfilerApi --capture-range-end stop-shutdown -f true -o diffsim\profile\nsys\fused uv run python diffsim\profile_particle_primitive_wall.py --viewer null --fused-soft-contactZD:\projects\newtonÇÍ-D:\projects\newton\diffsim\profile\nsys\fused‚column»í 
+¯|ÙŸÊûáÛ&¢Ï|
+Á|
+uvrunpython*diffsim\profile_particle_primitive_wall.py--viewernull--fused-soft-contactD:\projects\newton *ì>
+,
+
+BOOST_ROOTD:\Programs\Boost\boost_1_85_0
+E
+CHROME_CRASHPAD_PIPE_NAME(\\.\pipe\crashpad_29436_AIBHLZYWUWAYRBZU
+O
+PHPSTORM_VM_OPTIONS8D:\Renk\resource\wjb\jetbra\vmoptions\phpstorm.vmoptions
+!
+ALLUSERSPROFILEC:\ProgramData
+Q
+DATASPELL_VM_OPTIONS9D:\Renk\resource\wjb\jetbra\vmoptions\dataspell.vmoptions
+M
+APPCODE_VM_OPTIONS7D:\Renk\resource\wjb\jetbra\vmoptions\appcode.vmoptions
+$
+CLionD:\Clion\CLion 2025.3.3\bin
+)
+APPDATAC:\Users\86193\AppData\Roaming
+
+JAX_TRACEBACK_FILTERINGoff
+
+HOMEPATH\Users\86193
+
+CONDA_PREFIXD:\Anaconda
+I
+CLION_VM_OPTIONS5D:\Renk\resource\wjb\jetbra\vmoptions\clion.vmoptions
+K
+PROCESSOR_IDENTIFIER3Intel64 Family 6 Model 154 Stepping 3, GenuineIntel
+
+COMPUTERNAMERENK
+]
+JETBRAINSCLIENT_VM_OPTIONS?D:\Renk\resource\wjb\jetbra\vmoptions\jetbrainsclient.vmoptions
+
+CONDA_DEFAULT_ENVbase
+,
+LOCALAPPDATAC:\Users\86193\AppData\Local
+3
+SSL_CERT_FILE"D:\Anaconda\Library\ssl\cacert.pem
+*
+	CONDA_EXED:\Anaconda\Scripts\conda.exe
+ 
+CONDA_PROMPT_MODIFIER(base) 
+W
+DEVECOSTUDIO_VM_OPTIONS<D:\Renk\resource\wjb\jetbra\vmoptions\devecostudio.vmoptions
+*
+CONDA_PYTHON_EXED:\Anaconda\python.exe
+
+GLOG_logbufsecs0
+
+CONDA_SHLVL1
+
+GOPATHC:\Users\86193\go
+$
+	CUDA_PATHD:\Programs\cudainstall
+3
+CUDA_PATH_V11_6 D:\Programs\CUDA11.6\Development
++
+ProgramFiles(x86)C:\Program Files (x86)
+
+PROCESSOR_ARCHITECTUREAMD64
+G
+IDEA_VM_OPTIONS4D:\Renk\resource\wjb\jetbra\vmoptions\idea.vmoptions
+K
+CUDA_PATH_V12_68C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.6
+Ö
+VSCODE_GIT_ASKPASS_MAINjc:\Users\86193\AppData\Roaming\Code\User\globalStorage\vscode.git\askpass\70789581cae28aa7\askpass-main.js
+
+EFC_14480_15929130361
+*
+CUDA_PATH_V12_8D:\Programs\cudainstall
+
+USERNAME86193
+&
+ComSpecC:\WINDOWS\system32\cmd.exe
+3
+CommonProgramFilesC:\Program Files\Common Files
+>
+CommonProgramFiles(x86)#C:\Program Files (x86)\Common Files
+3
+CommonProgramW6432C:\Program Files\Common Files
+O
+DATAGRIP_VM_OPTIONS8D:\Renk\resource\wjb\jetbra\vmoptions\datagrip.vmoptions
+4
+
+DriverData&C:\Windows\System32\Drivers\DriverData
+
+EFC_14480_41267989901
+ 
+EIGEN3_ROOTD:\Programs\Eigen
+M
+GATEWAY_VM_OPTIONS7D:\Renk\resource\wjb\jetbra\vmoptions\gateway.vmoptions
+ 
+ProgramW6432C:\Program Files
+K
+GOLAND_VM_OPTIONS6D:\Renk\resource\wjb\jetbra\vmoptions\goland.vmoptions
+ 
+ProgramFilesC:\Program Files
+Ø
+
+IGCCSVC_DB†AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAA3CQT6geyI0uBh6PWdG8uewQAAAACAAAAAAAQZgAAAAEAACAAAABtbtuhrlx37jTZFE6GPH2xug+k/8kh1hI/H0OCraAZoQAAAAAOgAAAAAIAACAAAABTc7C8gYt7zdBzN+kKcWgPWU6AcMhYMnsK/cKu/arn/mAAAACOUFBczxXR0j9MlLfUGrHN5WuF/cn5OXKbx2sudBV9ZefmuUmcg9/8qyWZJzrsyO1/lt8KnsDErMZK9OsGPaayijPWbg1+dPBtJQLJd0hVk9Aha4bjusfS36qO3Tno2kRAAAAAdV/if6j0d2KeHnR286MD4/aWIOi8zbXib8kOVIp1YNuvvIQgCTk17+TYEapMZg1hTa7tBtXGzI5vymKOGOq5Zg==
+
+	HOMEDRIVEC:
++
+PSExecutionPolicyPreferenceRemoteSigned
++
+	JAVA_HOMED:\Programs\Compiler\java\java
+M
+PYCHARM_VM_OPTIONS7D:\Renk\resource\wjb\jetbra\vmoptions\pycharm.vmoptions
+_
+JETBRAINS_CLIENT_VM_OPTIONS@D:\Renk\resource\wjb\jetbra\vmoptions\jetbrains_client.vmoptions
+
+LOGONSERVER\\RENK
+
+MUJOCO_WARP_PLATFORMgpu
+
+NUMBER_OF_PROCESSORS20
+B
+NVTOOLSEXT_PATH/C:\Program Files\NVIDIA Corporation\NvToolsExt\
+
+OS
+Windows_NT
+#
+OneDriveC:\Users\86193\OneDrive
+N
+PATHEXTC.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC;.PY;.PYW;.CPL
+#
+PM_PACKAGES_ROOTD:\packman-repo
+s
+BUNDLED_DEBUGPY_PATH[c:\Users\86193\.vscode\extensions\ms-python.debugpy-2026.6.0-win32-x64\bundled\libs\debugpy
+
+PROCESSOR_LEVEL6
+
+PROCESSOR_REVISION9a03
+#
+PYDEVD_DISABLE_FILE_VALIDATION1
+O
+WEBSTORM_VM_OPTIONS8D:\Renk\resource\wjb\jetbra\vmoptions\webstorm.vmoptions
+°
+PSModulePathêC:\Users\86193\Documents\WindowsPowerShell\Modules;C:\Program Files\WindowsPowerShell\Modules;C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules
+
+PUBLICC:\Users\Public
+â
+PathÄD:\projects\newton\.venv/Scripts;D:\Anaconda;D:\Anaconda\Library\mingw-w64\bin;D:\Anaconda\Library\usr\bin;D:\Anaconda\Library\bin;D:\Anaconda\Scripts;D:\Anaconda\bin;D:\Anaconda\condabin;D:\Programs\cudainstall\bin;D:\Programs\cudainstall\libnvvp;D:\Programs\CUDA11.6\Development\bin;D:\Programs\CUDA11.6\Development\libnvvp;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.6\bin;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.6\libnvvp;D:\Programs\python\Python\Scripts;D:\Programs\python\Python;D:\Programs\Compiler\java\java\bin;C:\Program Files\Common Files\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0;C:\Windows\System32\OpenSSH;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\Docker\Docker\resources\bin;C:\Program Files\dotnet;D:\Programs\Compiler\MinGW\MinGW\bin;D:\Programs\Git\Git\Git\cmd;D:\Programs\vcpkg\vcpkg;D:\Programs\CMake\CMake\bin;D:\Programs\zookeeper\apache-zookeeper-3.8.1-bin\bin;C:\Program Files\MySQL\MySQL Server 8.0\bin;D:\Programs\Doxygen\doxygen\bin;D:\Programs\MangoDB\bin;D:\Renk\Study\Mujoco\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0;C:\WINDOWS\System32\OpenSSH;D:\Programs\NodeJS\nodejs;C:\Program Files\NVIDIA Corporation\NVIDIA App\NvDLISR;D:\Anaconda\Scripts;C:\Users\86193\.conda\envs\gaussian_splatting\Lib\site-packages\torch\lib;C:\Program Files\NVIDIA Corporation\Nsight Compute 2025.1.0;D:\Programs\ffmpeg\ffmpeg-master-latest-win64-gpl-shared\bin;C:\Program Files\Go\bin;D:\Programs\Nsight\Nsight System\NSYS\target-windows-x64;C:\Users\86193\.local\bin;C:\Users\86193\AppData\Local\Programs\Python\Launcher;C:\Users\86193\AppData\Local\Microsoft\WindowsApps;D:\Programs\IDEs\vscode\VSCODE\Microsoft VS Code\bin;D:\Programs\WebStorm\WebStorm 2024.1\bin;.;C:\Users\86193\.dotnet\tools;C:\Users\86193\AppData\Local\Programs\cursor\resources\app\bin;C:\Users\86193\AppData\Local\Programs\Ollama;D:\Programs\MangoDB\bin;C:\Users\86193\AppData\Roaming\npm;C:\Users\86193\go\bin;D:\Clion\CLion 2025.3.3\bin;C:\Program Files\NVIDIA Corporation\Nsight Systems 2026.4.1\target-windows-x64;.;c:\Users\86193\.vscode\extensions\ms-python.debugpy-2026.6.0-win32-x64\bundled\scripts\noConfigScripts
+
+ProgramDataC:\ProgramData
+I
+RIDER_VM_OPTIONS5D:\Renk\resource\wjb\jetbra\vmoptions\rider.vmoptions
+O
+RUBYMINE_VM_OPTIONS8D:\Renk\resource\wjb\jetbra\vmoptions\rubymine.vmoptions
+
+SESSIONNAMEConsole
+K
+STUDIO_VM_OPTIONS6D:\Renk\resource\wjb\jetbra\vmoptions\studio.vmoptions
+
+SystemDriveC:
+
+
+SystemRoot
+C:\WINDOWS
+)
+TEMP!C:\Users\86193\AppData\Local\Temp
+(
+TMP!C:\Users\86193\AppData\Local\Temp
+
+
+USERDOMAINRENK
+!
+USERDOMAIN_ROAMINGPROFILERENK
+
+USERPROFILEC:\Users\86193
+'
+VIRTUAL_ENVD:\projects\newton\.venv
+
+VIRTUAL_ENV_PROMPTnewton
+%
+ VSCODE_PYTHON_AUTOACTIVATE_GUARD1
+K
+WEBIDE_VM_OPTIONS6D:\Renk\resource\wjb\jetbra\vmoptions\webide.vmoptions
+5
+WebStorm)D:\Programs\WebStorm\WebStorm 2024.1\bin;
+
+ZES_ENABLE_SYSMAN1
+
+windir
+C:\WINDOWS
+
+TERM_PROGRAMvscode
+
+TERM_PROGRAM_VERSION1.135.0
+
+LANGzh_CN.UTF-8
+
+	COLORTERM	truecolor
+®
+ VSCODE_DEBUGPY_ADAPTER_ENDPOINTSÉc:\Users\86193\.vscode\extensions\ms-python.debugpy-2026.6.0-win32-x64\.noConfigDebugAdapterEndpoints\endpoint-8caa9779e338fe8b.txt
+à
+PYTHONSTARTUPwc:\Users\86193\AppData\Roaming\Code\User\workspaceStorage\583b3a87829bfc9117e4aab6bf14e557\ms-python.python\pythonrc.py
+
+PYTHON_BASIC_REPL1
+t
+GIT_ASKPASSec:\Users\86193\AppData\Roaming\Code\User\globalStorage\vscode.git\askpass\70789581cae28aa7\askpass.sh
+T
+VSCODE_GIT_ASKPASS_NODE9D:\Programs\IDEs\vscode\VSCODE\Microsoft VS Code\Code.exe
+!
+VSCODE_GIT_ASKPASS_EXTRA_ARGS 
+<
+VSCODE_GIT_IPC_HANDLE#\\.\pipe\vscode-git-4de9d7ec7d-sock
+
+VSCODE_INJECTION1
++
+
+_CONDA_EXED:\Anaconda\Scripts\conda.exe
+
+_CONDA_ROOTD:\Anaconda
+"
+__CONDA_OPENSLL_CERT_FILE_SET1
+
+
+LD_PRELOAD{}
+ 
+IS_PROCESS_PROFILED_BY_NSYS1@Jƒ=*¢= cudaGetLastErrorcudaHostGetDevicePointercudaSetupArgumentcudaConfigureCallcudaArrayGetInfocudaChooseDevicecudaCreateChannelDesccudaD3D10GetDevicecudaD3D10GetDevicescudaD3D10GetDirect3DDevicecudaD3D10ResourceGetMappedArraycudaD3D10ResourceGetMappedPitch!cudaD3D10ResourceGetMappedPointercudaD3D10ResourceGetMappedSize%cudaD3D10ResourceGetSurfaceDimensionscudaD3D10ResourceSetMapFlagscudaD3D10SetDirect3DDevicecudaD3D11GetDevicecudaD3D11GetDevicescudaD3D11GetDirect3DDevicecudaD3D11SetDirect3DDevicecudaD3D9BegincudaD3D9EndcudaD3D9GetDevicecudaD3D9GetDevicescudaD3D9GetDirect3DDevicecudaD3D9ResourceGetMappedArraycudaD3D9ResourceGetMappedPitch cudaD3D9ResourceGetMappedPointercudaD3D9ResourceGetMappedSize$cudaD3D9ResourceGetSurfaceDimensionscudaD3D9ResourceSetMapFlagscudaD3D9SetDirect3DDevicecudaDeviceCanAccessPeercudaDeviceDisablePeerAccesscudaDeviceEnablePeerAccesscudaDeviceGetAttributecudaDeviceGetByPCIBusIdcudaDeviceGetCacheConfigcudaDeviceGetLimitcudaDeviceGetP2PAttributecudaDeviceGetPCIBusIdcudaDeviceGetSharedMemConfig cudaDeviceGetStreamPriorityRangecudaDeviceSetCacheConfigcudaDeviceSetLimitcudaDeviceSetSharedMemConfigcudaDriverGetVersioncudaEventElapsedTimecudaFuncGetAttributescudaFuncSetAttributecudaFuncSetCacheConfigcudaFuncSetSharedMemConfigcudaGetChannelDesccudaGetDevicecudaGetDeviceCountcudaGetDeviceFlagscudaGetErrorNamecudaGetErrorStringcudaGetExportTablecudaGetMipmappedArrayLevel cudaGetSurfaceObjectResourceDesccudaGetSurfaceReferencecudaGetSymbolAddresscudaGetSymbolSizecudaGetTextureAlignmentOffset cudaGetTextureObjectResourceDesc$cudaGetTextureObjectResourceViewDesccudaGetTextureObjectTextureDesccudaGetTextureReferencecudaGLGetDevicescudaGLSetBufferObjectMapFlagscudaGLSetGLDevice%cudaGraphicsResourceGetMappedEglFrame+cudaGraphicsResourceGetMappedMipmappedArray$cudaGraphicsResourceGetMappedPointercudaGraphicsResourceSetMapFlags%cudaGraphicsSubResourceGetMappedArraycudaHostGetFlagscudaIpcGetEventHandlecudaIpcGetMemHandlecudaIpcOpenEventHandlecudaMemAdvisecudaMemRangeGetAttributecudaMemRangeGetAttributes-cudaOccupancyMaxActiveBlocksPerMultiprocessor6cudaOccupancyMaxActiveBlocksPerMultiprocessorWithFlagscudaPeekAtLastErrorcudaPeerGetDevicePointercudaPointerGetAttributescudaProfilerInitializecudaRuntimeGetVersioncudaSetDevicecudaSetDeviceFlagscudaSetDoubleForDevicecudaSetDoubleForHostcudaSetValidDevicescudaStreamGetFlagscudaStreamGetFlags_ptszcudaStreamGetPrioritycudaStreamGetPriority_ptszcudaStreamQuerycudaThreadExitcudaThreadGetCacheConfigcudaThreadGetLimitcudaThreadSetCacheConfigcudaThreadSetLimitcudaVDPAUGetDevicecudaVDPAUSetVDPAUDevicecudaWGLGetDevice__cudaInitModule__cudaPopCallConfiguration__cudaPushCallConfiguration__cudaRegisterFatBinary__cudaRegisterFatBinaryEnd__cudaRegisterFunction__cudaRegisterManagedVar__cudaRegisterSurface__cudaRegisterTexture__cudaRegisterVar__cudaUnregisterFatBinarycu64Array3DGetDescriptorcu64ArrayGetDescriptorcu64D3D10ResourceGetMappedPitch!cu64D3D10ResourceGetMappedPointercu64D3D10ResourceGetMappedSize%cu64D3D10ResourceGetSurfaceDimensionscu64D3D9ResourceGetMappedPitch cu64D3D9ResourceGetMappedPointercu64D3D9ResourceGetMappedSize$cu64D3D9ResourceGetSurfaceDimensionscu64DeviceTotalMem$cu64GraphicsResourceGetMappedPointercu64MemGetAddressRangecu64MemHostGetDevicePointercu64ModuleGetGlobalcu64TexRefGetAddresscu64TexRefSetAddresscu64TexRefSetAddress2DcuArray3DGetDescriptorcuArray3DGetDescriptor_v2cuArrayGetDescriptorcuArrayGetDescriptor_v2cuCtxAttachcuCtxDetachcuCtxDisablePeerAccesscuCtxEnablePeerAccesscuCtxGetApiVersioncuCtxGetCacheConfigcuCtxGetCurrentcuCtxGetDevicecuCtxGetFlagscuCtxGetLimitcuCtxGetSharedMemConfigcuCtxGetStreamPriorityRangecuCtxPopCurrentcuCtxPopCurrent_v2cuCtxPushCurrentcuCtxPushCurrent_v2cuCtxSetCacheConfigcuCtxSetLimitcuCtxSetSharedMemConfigcuD3D10GetDevicecuD3D10GetDevicescuD3D10GetDirect3DDevicecuD3D10ResourceGetMappedArraycuD3D10ResourceGetMappedPitch cuD3D10ResourceGetMappedPitch_v2cuD3D10ResourceGetMappedPointer"cuD3D10ResourceGetMappedPointer_v2cuD3D10ResourceGetMappedSizecuD3D10ResourceGetMappedSize_v2#cuD3D10ResourceGetSurfaceDimensions&cuD3D10ResourceGetSurfaceDimensions_v2cuD3D10ResourceSetMapFlagscuD3D11GetDevicecuD3D11GetDevicescuD3D11GetDirect3DDevicecuD3D9Begin	cuD3D9EndcuD3D9GetDevicecuD3D9GetDevicescuD3D9GetDirect3DDevicecuD3D9ResourceGetMappedArraycuD3D9ResourceGetMappedPitchcuD3D9ResourceGetMappedPitch_v2cuD3D9ResourceGetMappedPointer!cuD3D9ResourceGetMappedPointer_v2cuD3D9ResourceGetMappedSizecuD3D9ResourceGetMappedSize_v2"cuD3D9ResourceGetSurfaceDimensions%cuD3D9ResourceGetSurfaceDimensions_v2cuD3D9ResourceSetMapFlagscuDeviceCanAccessPeercuDeviceComputeCapabilitycuDeviceGetcuDeviceGetAttributecuDeviceGetByPCIBusIdcuDeviceGetCountcuDeviceGetNamecuDeviceGetP2PAttributecuDeviceGetPCIBusIdcuDeviceGetUuidcuDevicePrimaryCtxGetStatecuDevicePrimaryCtxReleasecuDevicePrimaryCtxResetcuDevicePrimaryCtxRetaincuDevicePrimaryCtxSetFlagscuDeviceTotalMemcuDeviceTotalMem_v2cuDriverGetVersioncuEventElapsedTimecuFuncGetAttributecuFuncSetAttributecuFuncSetBlockShapecuFuncSetCacheConfigcuFuncSetSharedMemConfigcuFuncSetSharedSizecuGetErrorNamecuGetErrorStringcuGetExportTablecuGLGetDevicescuGLGetDevices_v2cuGLSetBufferObjectMapFlags#cuGraphicsResourceGetMappedEglFrame)cuGraphicsResourceGetMappedMipmappedArray"cuGraphicsResourceGetMappedPointer%cuGraphicsResourceGetMappedPointer_v2cuGraphicsResourceSetMapFlags cuGraphicsResourceSetMapFlags_v2#cuGraphicsSubResourceGetMappedArraycuIpcGetEventHandlecuIpcGetMemHandlecuIpcOpenEventHandlecuLinkAddDatacuLinkAddData_v2cuLinkAddFilecuLinkAddFile_v2cuMemAdvisecuMemGetAddressRangecuMemGetAddressRange_v2cuMemHostGetDevicePointercuMemHostGetDevicePointer_v2cuMemHostGetFlagscuMemPeerGetDevicePointercuMemRangeGetAttributecuMemRangeGetAttributescuMipmappedArrayGetLevelcuModuleGetFunctioncuModuleGetGlobalcuModuleGetGlobal_v2cuModuleGetSurfRefcuModuleGetTexRefcuNNSetAllocatorcuNVNbufferGetPointercuNVNtextureGetArray+cuOccupancyMaxActiveBlocksPerMultiprocessor4cuOccupancyMaxActiveBlocksPerMultiprocessorWithFlags cuOccupancyMaxPotentialBlockSize)cuOccupancyMaxPotentialBlockSizeWithFlagscuParamSetfcuParamSeticuParamSetSizecuParamSetTexRefcuParamSetvcuPointerGetAttributecuPointerGetAttributescuPointerSetAttributecuProfilerInitializecuStreamGetCtxcuStreamGetCtx_ptszcuStreamGetFlagscuStreamGetFlags_ptszcuStreamGetPrioritycuStreamGetPriority_ptszcuStreamQuerycuStreamQuery_ptszcuSurfObjectGetResourceDesccuSurfRefGetArraycuSurfRefGetFormatcuSurfRefSetArraycuSurfRefSetFormatcuTexObjectGetResourceDesccuTexObjectGetResourceViewDesccuTexObjectGetTextureDesccuTexRefGetAddresscuTexRefGetAddress_v2cuTexRefGetAddressModecuTexRefGetArraycuTexRefGetBorderColorcuTexRefGetFilterModecuTexRefGetFlagscuTexRefGetFormatcuTexRefGetMaxAnisotropycuTexRefGetMipmapFilterModecuTexRefGetMipmapLevelBiascuTexRefGetMipmapLevelClampcuTexRefGetMipmappedArraycuTexRefSetAddresscuTexRefSetAddress_v2cuTexRefSetAddress2DcuTexRefSetAddress2D_v2cuTexRefSetAddress2D_v3cuTexRefSetAddressModecuTexRefSetArraycuTexRefSetBorderColorcuTexRefSetFilterModecuTexRefSetFlagscuTexRefSetFormatcuTexRefSetMaxAnisotropycuTexRefSetMipmapFilterModecuTexRefSetMipmapLevelBiascuTexRefSetMipmapLevelClampcuTexRefSetMipmappedArraycuVDPAUGetDevicecuWGLGetDevice 0 8 @ Jˇˇ R  Zÿ ‡: b“™≤Ú Ç R1029012`hp 
+=ÿÛóôóÛ&ö2
+0
+,‘™$D:\Programs\python\Python\python.exe
+?¯ˆÉπóÛ&™40
+,‘™$D:\Programs\python\Python\python.exe
+⁄
+(
+FV˙∫œ˙—•Òa≈à™~
+FV˙∫œ˙—•Òa≈à™~
+
+cªv"⁄B¸úóÑÎØw‚ë
+
+ÇÁdsﬁﬁGLÆªÎà‚
+
+îrm˚ÕH·âmò	î(2
+
+ßyãã/Näœ\RZH
+
+
+©,Õ‡!EKR∞w`¿•‡<Ö
+
+∑Å€†59OÙ°¬Jù±·
+
+—Å	ÏKŸ∑}qÏq	
+
+˙fglSOœ£X"¿Î{Í
+W
+FV˙∫œ˙—•Òa≈à™~©,Õ‡!EKR∞w`¿•‡<Ö
+†óªÛÕÊÙÁ…ºÄ·˛·;Ú¯DŒ›X@"Ä”à“ÕÊÙÁ˘⁄≈ˇ˝·;
+E
+cªv"⁄B¸úóÑÎØw‚ë˙fglSOœ£X"¿Î{
+Ã°øÌÂ¨˚ÁÃ°´øÕÊÙÁ      ?
+1
+ßyãã/Näœ\RZH∑Å€†59OÙ°¬Jù±·
+       ?
+S
+©,Õ‡!EKR∞w`¿•‡<Ößyãã/Näœ\RZH
+”˜Ò‡˛·;ú¯áπóÛ&_Â¶Ó’?"‘¶ƒˇ˝·;‹ıŸóóÛ&
+9
+∑Å€†59OÙ°¬Jù±·ÇÁdsﬁﬁGLÆªÎà‚
+Ã»ñôóÛ&      ?
+@
+—Å	ÏKŸ∑}qÏqßyãã/Näœ\RZH
+©ﬁÑ≠Â1ÑÿŸóóÛ&      Y@
+C
+˙fglSOœ£X"¿Î{ßyãã/Näœ\RZH
+Ã°´øÕÊÙÁÄ‘ÿóóÛ&      ?$c539df32-9913-4eac-8927-134e52d2788b"2026-08-28T09:16:40*RENK22026.4.1.191-264138605071v0:2026.4.1.191-264138605071v0¢264138605071v0™2026.4.1.191-264138605071v0≤2026-Aug-28 09:16:41∫6D:\projects\newton\diffsim\profile\nsys\fused.nsys-rep¬RENK ¶C:\Program Files\NVIDIA Corporation\Nsight Systems 2026.4.1\target-windows-x64\nsys.exe profile -t cuda -s none -c cudaProfilerApi --capture-range-end stop-shutdown -f true -o diffsim\profile\nsys\fused uv run python diffsim\profile_particle_primitive_wall.py --viewer null --fused-soft-contact¬RENKí
+
+Analysis Options Data9Ì@
+
+Raw Sampling Data¶AÜì
+
+Sampling Data Offsets¨‘	
+
+Agent activity listµ‘§ø
+
+Time Conversion DataŸì 
+
+UI Data£ô∑⁄     U3w[END]

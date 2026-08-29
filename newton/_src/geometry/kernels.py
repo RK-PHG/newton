@@ -1102,6 +1102,7 @@ def counter_increment_replay(
 @wp.kernel
 def create_soft_contacts(
     soft_rigid_contact_pairs: wp.array[wp.vec2i],
+    soft_rigid_contact_pair_count: wp.array[int],
     particle_q: wp.array[wp.vec3],
     particle_radius: wp.array[float],
     particle_flags: wp.array[wp.int32],
@@ -1133,6 +1134,8 @@ def create_soft_contacts(
     soft_contact_tids: wp.array[int],
 ):
     tid = wp.tid()
+    if soft_rigid_contact_pair_count.shape[0] > 0 and tid >= soft_rigid_contact_pair_count[0]:
+        return
     pair = soft_rigid_contact_pairs[tid]
     particle_index = pair[0]
     shape_index = pair[1]

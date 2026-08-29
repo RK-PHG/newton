@@ -1,0 +1,96 @@
+================================================================================================
+ParticlePrimitiveWall collision profile
+timestamp              : 2026-08-28T09:37:24+08:00
+platform               : Windows-11-10.0.26200-SP0
+python                 : 3.12.4
+newton                 : 1.6.0.dev0
+warp                   : 1.17.0.dev20260807
+device                 : cuda:0 / NVIDIA GeForce RTX 3070 Laptop GPU / sm_86
+CUDA driver            : 12.9
+CUDA toolkit (Warp)    : 12.9
+NVTX Python available  : False
+nsys executable found  : C:\Program Files\NVIDIA Corporation\Nsight Systems 2026.4.1\target-windows-x64\nsys.EXE
+viewer                 : null (disabled)
+soft candidates        : disabled
+fused soft contact     : disabled
+warmup / samples       : 5 / 20
+
+Fixed workload
+  particles             : 4096
+  static primitives     : 32 (24 box, 4 capsule, 2 cylinder, 2 sphere)
+  enabled contact type  : soft particle-static-shape only
+  candidate pairs       : 131072
+  compact candidates    : 131072
+  soft-contact capacity : 131072
+  active contacts       : 4096
+  candidates / active   : 32.0x
+
+Synchronized stage timings
+  stage                    mean ms     min ms     p50 ms     p95 ms   samples
+  collision_forward            0.5420     0.4906     0.5108     0.6377        20
+  solver_forward               0.2148     0.1954     0.2044     0.2438        20
+  simulation_forward           0.7443     0.7081     0.7408     0.7833        20
+  collision_backward           0.5162     0.5028     0.5121     0.5386        20
+  simulation_backward          0.8510     0.8021     0.8223     0.9793        20
+
+Derived analysis
+  collision / simulation forward : 72.8%
+  backward / simulation forward  : 1.14x
+  top collision forward activity : forward kernel create_soft_contacts_0f95c36c
+  top collision backward activity: backward kernel create_soft_contacts_0f95c36c
+  top forward CUDA activity       : forward kernel verify_narrow_phase_buffers_77619ee7
+  top backward CUDA activity      : backward kernel create_soft_contacts_0f95c36c
+  interpretation                  : baseline soft-contact evaluates particle x shape
+                                    even though one contact per particle is active here
+
+Collision-only forward CUDA activities
+  share   total ms  calls    avg ms    max ms  type      activity
+   37.3%     0.0543      1    0.0543    0.0543  kernel    forward kernel create_soft_contacts_0f95c36c
+   20.6%     0.0300      1    0.0300    0.0300  kernel    forward kernel create_narrow_phase_primitive_kernel__locals__narrow_phase_primitive_kernel_3b009710
+   20.4%     0.0297      1    0.0297    0.0297  kernel    forward kernel compute_shape_aabbs_0b8af2d6
+   11.2%     0.0164      1    0.0164    0.0164  kernel    forward kernel verify_narrow_phase_buffers_77619ee7
+   10.5%     0.0154      1    0.0154    0.0154  kernel    forward kernel rigid_contact_kinematics_kernel_f6a2bd90
+  activity total: 0.1457 ms (CUDA-event instrumentation enabled)
+
+Collision-only backward CUDA activities
+  share   total ms  calls    avg ms    max ms  type      activity
+   95.6%     0.3787      1    0.3787    0.3787  kernel    backward kernel create_soft_contacts_0f95c36c
+    2.8%     0.0113      1    0.0113    0.0113  memcpy    memcpy DtoD
+    1.6%     0.0061      1    0.0061    0.0061  kernel    backward kernel rigid_contact_kinematics_kernel_f6a2bd90
+  activity total: 0.3961 ms (CUDA-event instrumentation enabled)
+
+Differentiable forward CUDA activities
+  share   total ms  calls    avg ms    max ms  type      activity
+   47.2%     0.2365      1    0.2365    0.2365  kernel    forward kernel verify_narrow_phase_buffers_77619ee7
+   21.5%     0.1074      1    0.1074    0.1074  kernel    forward kernel particle_velocity_loss_f5529248
+   10.0%     0.0502      1    0.0502    0.0502  kernel    forward kernel create_soft_contacts_0f95c36c
+    7.4%     0.0369      1    0.0369    0.0369  kernel    forward kernel compute_shape_aabbs_0b8af2d6
+    5.9%     0.0297      1    0.0297    0.0297  kernel    forward kernel eval_particle_body_contact_abaad752
+    3.1%     0.0154      1    0.0154    0.0154  kernel    forward kernel integrate_particles_97f94e26
+    1.8%     0.0092      1    0.0092    0.0092  kernel    forward kernel create_narrow_phase_primitive_kernel__locals__narrow_phase_primitive_kernel_3b009710
+    1.2%     0.0061      1    0.0061    0.0061  kernel    forward kernel eval_body_contact_2a5ebe04
+    1.0%     0.0051      1    0.0051    0.0051  kernel    forward kernel rigid_contact_kinematics_kernel_f6a2bd90
+    0.8%     0.0041      1    0.0041    0.0041  memset    memset
+  activity total: 0.5006 ms (CUDA-event instrumentation enabled)
+
+Tape backward CUDA activities
+  share   total ms  calls    avg ms    max ms  type      activity
+   70.2%     0.3348      1    0.3348    0.3348  kernel    backward kernel create_soft_contacts_0f95c36c
+    8.8%     0.0420      1    0.0420    0.0420  kernel    backward kernel integrate_particles_97f94e26
+    5.6%     0.0268      1    0.0268    0.0268  kernel    backward kernel particle_velocity_loss_f5529248
+    5.6%     0.0266      1    0.0266    0.0266  builtin   builtin kernel memtile_value_kernel
+    5.3%     0.0254      1    0.0254    0.0254  kernel    backward kernel eval_particle_body_contact_abaad752
+    3.4%     0.0164      1    0.0164    0.0164  kernel    backward kernel eval_body_contact_2a5ebe04
+    1.1%     0.0051      1    0.0051    0.0051  kernel    backward kernel rigid_contact_kinematics_kernel_f6a2bd90
+  activity total: 0.4771 ms (CUDA-event instrumentation enabled)
+
+Measurement notes
+  - Stage timings synchronize the CUDA device and exclude first-use compilation via warm-up.
+  - CUDA activity timings inject events; use them to rank kernels, not as stage totals.
+  - simulation_forward includes force clear, collision, contact solve, and integration.
+  - collision_backward seeds soft_contact_body_pos and excludes solver adjoints.
+  - simulation_backward includes collision, contact-force, integration, and loss adjoints.
+  - fused mode preserves collide(); solver.step() while deferring soft-contact geometry to the solver.
+  - fused mode does not materialize soft-contact geometry arrays.
+  - Gradient zeroing runs before each backward sample and is not included in its timing.
+  - External profiler capture markers available: True.

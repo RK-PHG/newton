@@ -23,7 +23,7 @@ from ..geometry.contact_data import (
 from ..geometry.contact_match import ContactMatcher
 from ..geometry.contact_sort import ContactSorter
 from ..geometry.differentiable_contacts import launch_differentiable_contact_augment
-from ..geometry.flags import ShapeFlags
+from ..geometry.flags import ParticleFlags, ShapeFlags
 from ..geometry.kernels import create_soft_contacts
 from ..geometry.narrow_phase import NarrowPhase
 from ..geometry.sdf_hydroelastic import HydroelasticSDF
@@ -470,6 +470,55 @@ def compute_shape_aabbs(
     # Narrow-phase geometry data (reuses X_ws and scale already computed above)
     geom_data[shape_id] = wp.vec4(geom_scale[0], geom_scale[1], geom_scale[2], margin)
     geom_xform[shape_id] = X_ws
+
+
+@wp.kernel(enable_backward=False)
+def build_soft_contact_candidates(
+    shape_bvh_id: wp.uint64,
+    shape_bvh_group_roots: wp.array[wp.int32],
+    bvh_shape_enabled: wp.array[wp.uint32],
+    particle_q: wp.array[wp.vec3],
+    particle_radius: wp.array[float],
+    particle_flags: wp.array[wp.int32],
+    particle_world: wp.array[wp.int32],
+    shape_flags: wp.array[wp.int32],
+    query_margin: float,
+    candidate_max: int,
+    candidate_count: wp.array[wp.int32],
+    candidate_pairs: wp.array[wp.vec2i],
+):
+    """Compact particle-shape AABB overlaps from the model shape BVH."""
+    particle_index = wp.tid()
+    if (particle_flags[particle_index] & ParticleFlags.ACTIVE) == 0:
+        return
+
+    extent = particle_radius[particle_index] + query_margin
+    lower = particle_q[particle_index] - wp.vec3(extent)
+    upper = particle_q[particle_index] + wp.vec3(extent)
+    particle_world_id = particle_world[particle_index]
+    bvh_shape_index = wp.int32(0)
+
+    if particle_world_id < 0:
+        query = wp.bvh_query_aabb(shape_bvh_id, lower, upper)
+        while wp.bvh_query_next(query, bvh_shape_index):
+            shape_index = wp.int32(bvh_shape_enabled[bvh_shape_index])
+            if (shape_flags[shape_index] & ShapeFlags.COLLIDE_PARTICLES) != 0:
+                candidate_index = wp.atomic_add(candidate_count, 0, 1)
+                if candidate_index < candidate_max:
+                    candidate_pairs[candidate_index] = wp.vec2i(particle_index, shape_index)
+    else:
+        for query_pass in range(2):
+            group_index = particle_world_id if query_pass == 0 else shape_bvh_group_roots.shape[0] - 1
+            group_root = shape_bvh_group_roots[group_index]
+            if group_root < 0:
+                continue
+            query = wp.bvh_query_aabb(shape_bvh_id, lower, upper, group_root)
+            while wp.bvh_query_next(query, bvh_shape_index):
+                shape_index = wp.int32(bvh_shape_enabled[bvh_shape_index])
+                if (shape_flags[shape_index] & ShapeFlags.COLLIDE_PARTICLES) != 0:
+                    candidate_index = wp.atomic_add(candidate_count, 0, 1)
+                    if candidate_index < candidate_max:
+                        candidate_pairs[candidate_index] = wp.vec2i(particle_index, shape_index)
 
 
 @wp.kernel(enable_backward=False)
@@ -1112,6 +1161,8 @@ class CollisionPipeline:
         include_static_kinematic_pairs: bool = True,
         soft_contact_max: int | None = None,
         soft_contact_margin: float = 0.01,
+        enable_soft_contact_candidates: bool = False,
+        enable_fused_soft_contact: bool = False,
         enable_rigid_soft_full_surface_contact: bool = False,
         requires_grad: bool | None = None,
         broad_phase: Literal["nxn", "sap", "explicit"]
@@ -1157,6 +1208,17 @@ class CollisionPipeline:
                 contact generation, plus the full-surface edge/face headroom when
                 ``enable_rigid_soft_full_surface_contact`` is set.
             soft_contact_margin: Margin for soft contact generation. Defaults to 0.01.
+            enable_soft_contact_candidates: Use the model shape BVH to compact
+                particle-shape AABB overlaps before soft-contact generation.
+                The discrete candidate set is not differentiated; accepted
+                pairs still use the differentiable soft-contact kernel.
+                Defaults to False.
+            enable_fused_soft_contact: Defer particle-shape contact geometry
+                materialization so :class:`~newton.solvers.SolverSemiImplicit`
+                can evaluate contact detection and penalty response in one
+                fused kernel. The soft-contact geometry arrays are not valid
+                after :meth:`collide` in this experimental mode. Defaults to
+                False.
             enable_rigid_soft_full_surface_contact: Generate soft contacts over the full soft-mesh
                 surface -- the edges and triangle interiors -- against rigid SDFs, in addition to the
                 per-vertex (particle) contacts. Catches rigid features that pass between soft vertices
@@ -1266,6 +1328,10 @@ class CollisionPipeline:
         matching_sticky = contact_matching == "sticky"
         if contact_report and not matching_enabled:
             raise ValueError('contact_report=True requires contact_matching != "disabled"')
+        if enable_fused_soft_contact and enable_rigid_soft_full_surface_contact:
+            raise ValueError(
+                "enable_fused_soft_contact is incompatible with enable_rigid_soft_full_surface_contact"
+            )
 
         # Any non-disabled matching mode implies deterministic sorting.
         if matching_enabled:
@@ -1311,6 +1377,7 @@ class CollisionPipeline:
         self.reduce_contacts = reduce_contacts
         self.requires_grad = requires_grad
         self.soft_contact_margin = soft_contact_margin
+        self.enable_fused_soft_contact = enable_fused_soft_contact
         self.include_static_kinematic_pairs = include_static_kinematic_pairs
         self.speculative_config = speculative_config
         self._speculative_enabled = speculative_config is not None
@@ -1611,6 +1678,32 @@ class CollisionPipeline:
         # Host-side, so not graph-capture-safe -- construct the pipeline before any capture.
         self.soft_rigid_contact_pairs = _build_soft_particle_rigid_contact_pairs(model)
         self._soft_rigid_contact_pair_count = len(self.soft_rigid_contact_pairs)
+        self.enable_soft_contact_candidates = enable_soft_contact_candidates
+        self._soft_contact_candidate_count = wp.empty(0, dtype=wp.int32, device=model.device)
+        self._soft_contact_candidate_pairs = self.soft_rigid_contact_pairs
+        self._soft_contact_candidate_shape_margin_max = 0.0
+        if enable_soft_contact_candidates and self._soft_rigid_contact_pair_count > 0:
+            if model.bvh_shapes is None or model.bvh_shapes_group_roots is None or model.bvh_shape_enabled is None:
+                raise ValueError("enable_soft_contact_candidates requires the model shape BVH")
+
+            enabled_shapes = model.bvh_shape_enabled.numpy()[: model.bvh_shape_count_enabled].astype(np.intp)
+            bvh_mask = np.zeros(model.shape_count, dtype=bool)
+            bvh_mask[enabled_shapes] = True
+            shape_flags_np = model.shape_flags.numpy()
+            soft_shape_mask = (shape_flags_np & int(ShapeFlags.COLLIDE_PARTICLES)) != 0
+            missing_shapes = np.flatnonzero(soft_shape_mask & ~bvh_mask)
+            if len(missing_shapes):
+                raise ValueError(
+                    "enable_soft_contact_candidates requires every particle-colliding shape in the model shape BVH; "
+                    f"missing shape indices: {missing_shapes.tolist()}"
+                )
+
+            shape_margins_np = model.shape_margin.numpy()
+            self._soft_contact_candidate_shape_margin_max = float(
+                np.max(shape_margins_np[soft_shape_mask], initial=0.0)
+            )
+            self._soft_contact_candidate_count = wp.zeros(1, dtype=wp.int32, device=model.device)
+            self._soft_contact_candidate_pairs = wp.empty_like(self.soft_rigid_contact_pairs)
         self.enable_rigid_soft_full_surface_contact = enable_rigid_soft_full_surface_contact
         # Full-surface edge/face candidate pairs (world-compatible, like the particle pairs above);
         # empty when the flag is off so the flag-off default stays bit-for-bit.
@@ -1688,6 +1781,11 @@ class CollisionPipeline:
         """
         return self._soft_rigid_contact_pair_count
 
+    @property
+    def soft_contact_candidate_count(self) -> wp.array[wp.int32]:
+        """Device-side compact candidate count, or an empty array when disabled."""
+        return self._soft_contact_candidate_count
+
     def contacts(self) -> Contacts:
         """
         Allocate and return a new :class:`newton.Contacts` object for this pipeline.
@@ -1724,6 +1822,12 @@ class CollisionPipeline:
         # Flag the buffer so solvers that only consume particle contacts can refuse it (see
         # Contacts._enable_rigid_soft_full_surface_contact); edge/face records appear only when this is set.
         contacts._enable_rigid_soft_full_surface_contact = self.enable_rigid_soft_full_surface_contact
+        contacts._soft_contact_deferred = self.enable_fused_soft_contact
+        if self.enable_fused_soft_contact:
+            contacts._soft_contact_deferred_pairs = self._soft_contact_candidate_pairs
+            contacts._soft_contact_deferred_pair_count = self._soft_contact_candidate_count
+            contacts._soft_contact_deferred_pair_max = self.soft_rigid_contact_pair_count
+            contacts._soft_contact_deferred_margin = self.soft_contact_margin
 
         # attach custom attributes with assignment==CONTACT
         self.model._add_custom_attributes(contacts, Model.AttributeAssignment.CONTACT, requires_grad=self.requires_grad)
@@ -1809,6 +1913,11 @@ class CollisionPipeline:
         # particle-only solvers (XPBD, semi-implicit, Style3D) would not raise and would silently
         # ignore them. Mirrors the assignment in CollisionPipeline.contacts().
         contacts._enable_rigid_soft_full_surface_contact = self.enable_rigid_soft_full_surface_contact
+        contacts._soft_contact_deferred = self.enable_fused_soft_contact
+        if not self.enable_fused_soft_contact:
+            contacts._soft_contact_deferred_pairs = None
+            contacts._soft_contact_deferred_pair_count = None
+            contacts._soft_contact_deferred_pair_max = 0
 
         # Counter zeroing and generation bump are fused into compute_shape_aabbs.
         # Only call contacts.clear() if clear_buffers mode is enabled (debug path).
@@ -2148,44 +2257,81 @@ class CollisionPipeline:
 
         # Generate soft contacts for particles and shapes
         if state.particle_q and self.soft_contact_max > 0 and self.soft_rigid_contact_pair_count > 0:
-            wp.launch(
-                kernel=create_soft_contacts,
-                dim=self.soft_rigid_contact_pair_count,
-                inputs=[
-                    self.soft_rigid_contact_pairs,
-                    state.particle_q,
-                    model.particle_radius,
-                    model.particle_flags,
-                    model.particle_world,
-                    state.body_q,
-                    model.shape_transform,
-                    model.shape_body,
-                    model.shape_type,
-                    model.shape_scale,
-                    model.shape_source_ptr,
-                    model._shape_mesh_properties,
-                    model.shape_world,
-                    soft_contact_margin,
-                    model.shape_margin,
-                    self.soft_contact_max,
-                    model.shape_flags,
-                    model.shape_heightfield_index,
-                    model.heightfield_data,
-                    model.heightfield_elevations,
-                ],
-                outputs=[
-                    contacts.soft_contact_count,
-                    contacts.soft_contact_particle,
-                    contacts.soft_contact_indices,
-                    contacts.soft_contact_barycentric,
-                    contacts.soft_contact_shape,
-                    contacts.soft_contact_body_pos,
-                    contacts.soft_contact_body_vel,
-                    contacts.soft_contact_normal,
-                    contacts.soft_contact_tids,
-                ],
-                device=self.device,
-            )
+            soft_contact_pairs = self.soft_rigid_contact_pairs
+            soft_contact_pair_count = self._soft_contact_candidate_count
+            if self.enable_soft_contact_candidates:
+                if model.body_count > 0:
+                    model.bvh_refit_shapes(state)
+                soft_contact_pair_count.zero_()
+                wp.launch(
+                    kernel=build_soft_contact_candidates,
+                    dim=model.particle_count,
+                    inputs=[
+                        model.bvh_shapes.id,
+                        model.bvh_shapes_group_roots,
+                        model.bvh_shape_enabled,
+                        state.particle_q,
+                        model.particle_radius,
+                        model.particle_flags,
+                        model.particle_world,
+                        model.shape_flags,
+                        soft_contact_margin + self._soft_contact_candidate_shape_margin_max,
+                        self.soft_rigid_contact_pair_count,
+                    ],
+                    outputs=[
+                        soft_contact_pair_count,
+                        self._soft_contact_candidate_pairs,
+                    ],
+                    device=self.device,
+                    record_tape=False,
+                )
+                soft_contact_pairs = self._soft_contact_candidate_pairs
+
+            if self.enable_fused_soft_contact:
+                contacts._soft_contact_deferred_pairs = soft_contact_pairs
+                contacts._soft_contact_deferred_pair_count = soft_contact_pair_count
+                contacts._soft_contact_deferred_pair_max = self.soft_rigid_contact_pair_count
+                contacts._soft_contact_deferred_margin = soft_contact_margin
+            else:
+                wp.launch(
+                    kernel=create_soft_contacts,
+                    dim=self.soft_rigid_contact_pair_count,
+                    inputs=[
+                        soft_contact_pairs,
+                        soft_contact_pair_count,
+                        state.particle_q,
+                        model.particle_radius,
+                        model.particle_flags,
+                        model.particle_world,
+                        state.body_q,
+                        model.shape_transform,
+                        model.shape_body,
+                        model.shape_type,
+                        model.shape_scale,
+                        model.shape_source_ptr,
+                        model._shape_mesh_properties,
+                        model.shape_world,
+                        soft_contact_margin,
+                        model.shape_margin,
+                        self.soft_contact_max,
+                        model.shape_flags,
+                        model.shape_heightfield_index,
+                        model.heightfield_data,
+                        model.heightfield_elevations,
+                    ],
+                    outputs=[
+                        contacts.soft_contact_count,
+                        contacts.soft_contact_particle,
+                        contacts.soft_contact_indices,
+                        contacts.soft_contact_barycentric,
+                        contacts.soft_contact_shape,
+                        contacts.soft_contact_body_pos,
+                        contacts.soft_contact_body_vel,
+                        contacts.soft_contact_normal,
+                        contacts.soft_contact_tids,
+                    ],
+                    device=self.device,
+                )
 
         # Full-surface EDGE/FACE passes (opt-in, set at construction): add the soft edge/face contacts
         # the per-particle path cannot detect. Run after the legacy particle launch on the same stream;

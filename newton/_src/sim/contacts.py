@@ -224,6 +224,11 @@ class Contacts:
         self.per_contact_shape_properties = per_contact_shape_properties
         self.clear_buffers = clear_buffers
         self._contact_matching_mode: Literal["disabled", "latest", "sticky"] = "disabled"
+        self._soft_contact_deferred = False
+        self._soft_contact_deferred_pairs = None
+        self._soft_contact_deferred_pair_count = None
+        self._soft_contact_deferred_pair_max = 0
+        self._soft_contact_deferred_margin = 0.0
         with wp.ScopedDevice(device):
             # One int32[2] array holding two independent contact counts: [0] rigid, [1] soft.
             # rigid_contact_count (the [0:1] view) and soft_contact_count (the [1:2] view) index
@@ -574,6 +579,12 @@ class Contacts:
         Args:
             solver_name: Name of the calling solver, used in the error message.
         """
+        if self._soft_contact_deferred:
+            raise NotImplementedError(
+                f"{solver_name} does not support deferred soft contacts; only SolverSemiImplicit "
+                "can consume CollisionPipeline(enable_fused_soft_contact=True). Disable the flag "
+                "or use SolverSemiImplicit."
+            )
         if self._enable_rigid_soft_full_surface_contact:
             raise NotImplementedError(
                 f"{solver_name} does not support full-surface soft contacts "
