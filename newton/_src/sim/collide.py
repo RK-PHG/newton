@@ -23,6 +23,10 @@ from ..geometry.contact_data import (
 from ..geometry.contact_match import ContactMatcher
 from ..geometry.contact_sort import ContactSorter
 from ..geometry.differentiable_contacts import launch_differentiable_contact_augment
+from ..geometry.differentiable_rigid_contact import (
+    find_differentiable_rigid_pairs,
+    prepare_differentiable_rigid_contacts,
+)
 from ..geometry.flags import ParticleFlags, ShapeFlags
 from ..geometry.kernels import create_soft_contacts
 from ..geometry.narrow_phase import NarrowPhase
@@ -1130,6 +1134,10 @@ class CollisionPipeline:
         without prior notice. The narrow phase stays frozen and gradients are
         a tangent approximation; validate accuracy and usefulness on your
         workflow before relying on them in optimization loops.
+
+        :class:`DifferentiableRigidContactConfig` provides a separate
+        fixed-topology mesh SDF force path for
+        :class:`~newton.solvers.SolverSemiImplicit`.
     """
 
     @dataclasses.dataclass(frozen=True)
@@ -1149,6 +1157,43 @@ class CollisionPipeline:
             value = self.max_speculative_extension
             if not np.isfinite(value) or value < 0.0:
                 raise ValueError(f"max_speculative_extension must be a non-negative finite number, got {value!r}")
+
+    @dataclasses.dataclass(frozen=True, kw_only=True)
+    class DifferentiableRigidContactConfig:
+        """Configure fixed-topology differentiable mesh SDF contact.
+
+        The pipeline bakes a dense SDF and deterministic surface quadrature for
+        every participating mesh shape at construction. During
+        :class:`~newton.solvers.SolverSemiImplicit` stepping, eligible mesh-mesh
+        pairs use a smooth penalty force whose gradient flows through both body
+        poses. Broad-phase pair selection and SDF construction remain fixed and
+        are not differentiated.
+
+        .. experimental::
+
+            This first implementation supports ``MESH`` and ``CONVEX_MESH``
+            pairs with normal elastic response in
+            :class:`~newton.solvers.SolverSemiImplicit`. Contact topology is
+            fixed for the lifetime of the pipeline.
+        """
+
+        sdf_resolution: int = 64
+        """Voxel count along the longest padded shape axis."""
+
+        surface_sample_count: int = 256
+        """Deterministic area-stratified samples per shape."""
+
+        contact_margin: float = 0.01
+        """Smooth contact activation margin [m], excluding per-shape margins."""
+
+        def __post_init__(self):
+            """Validate construction-time discretization parameters."""
+            if self.sdf_resolution < 8:
+                raise ValueError(f"sdf_resolution must be at least 8, got {self.sdf_resolution}")
+            if self.surface_sample_count <= 0:
+                raise ValueError(f"surface_sample_count must be positive, got {self.surface_sample_count}")
+            if not np.isfinite(self.contact_margin) or self.contact_margin <= 0.0:
+                raise ValueError(f"contact_margin must be a positive finite number, got {self.contact_margin!r}")
 
     def __init__(
         self,
@@ -1181,6 +1226,7 @@ class CollisionPipeline:
         verify_buffers: bool = True,
         contact_reduction_hashtable_size_factor: float = 0.25,
         speculative_config: SpeculativeContactConfig | None = None,
+        differentiable_rigid_contact_config: DifferentiableRigidContactConfig | None = None,
     ):
         """
         Initialize the CollisionPipeline (expert API).
@@ -1305,6 +1351,13 @@ class CollisionPipeline:
                 collision-update horizon. See
                 :ref:`Speculative contacts <speculative-contacts>` and
                 :class:`SpeculativeContactConfig`.
+            differentiable_rigid_contact_config: Enable fixed-topology
+                differentiable mesh-mesh SDF contact. Eligible pairs keep the
+                usual :meth:`collide` then
+                :meth:`~newton.solvers.SolverSemiImplicit.step` API, but the
+                semi-implicit solver replaces their discrete penalty response
+                with symmetric surface-to-SDF quadrature. SDF baking occurs
+                once during pipeline construction. Defaults to ``None``.
 
         .. experimental::
 
@@ -1381,6 +1434,8 @@ class CollisionPipeline:
         self.include_static_kinematic_pairs = include_static_kinematic_pairs
         self.speculative_config = speculative_config
         self._speculative_enabled = speculative_config is not None
+        self.differentiable_rigid_contact_config = differentiable_rigid_contact_config
+        self._differentiable_rigid_contact_data = None
         contact_writer = write_contact_speculative if self._speculative_enabled else write_contact
 
         if using_expert_components:
@@ -1762,6 +1817,24 @@ class CollisionPipeline:
         else:
             self._contact_matcher = None
 
+        if differentiable_rigid_contact_config is not None:
+            differentiable_candidate_pairs = (
+                self.shape_pairs_filtered if self.broad_phase_mode == "explicit" else model.shape_contact_pairs
+            )
+            differentiable_pairs = find_differentiable_rigid_pairs(model, differentiable_candidate_pairs)
+            if not differentiable_pairs:
+                raise ValueError(
+                    "differentiable_rigid_contact_config requires at least one collidable "
+                    "MESH/CONVEX_MESH pair backed by newton.Mesh geometry"
+                )
+            self._differentiable_rigid_contact_data = prepare_differentiable_rigid_contacts(
+                model,
+                differentiable_pairs,
+                sdf_resolution=differentiable_rigid_contact_config.sdf_resolution,
+                surface_sample_count=differentiable_rigid_contact_config.surface_sample_count,
+                contact_margin=differentiable_rigid_contact_config.contact_margin,
+            )
+
     @property
     def rigid_contact_max(self) -> int:
         """Maximum rigid contact buffer capacity used by this pipeline."""
@@ -1823,6 +1896,9 @@ class CollisionPipeline:
         # Contacts._enable_rigid_soft_full_surface_contact); edge/face records appear only when this is set.
         contacts._enable_rigid_soft_full_surface_contact = self.enable_rigid_soft_full_surface_contact
         contacts._soft_contact_deferred = self.enable_fused_soft_contact
+        contacts._differentiable_rigid_contact_data = self._differentiable_rigid_contact_data
+        if self._differentiable_rigid_contact_data is not None:
+            contacts._differentiable_rigid_contact_pair_keys = self._differentiable_rigid_contact_data.pair_keys
         if self.enable_fused_soft_contact:
             contacts._soft_contact_deferred_pairs = self._soft_contact_candidate_pairs
             contacts._soft_contact_deferred_pair_count = self._soft_contact_candidate_count
@@ -1889,6 +1965,12 @@ class CollisionPipeline:
         :func:`newton.eval_rigid_contact_kinematics` explicitly
         after collision detection to reconstruct only the quantities it needs.
 
+        When :class:`DifferentiableRigidContactConfig` is enabled, this method
+        also attaches the pipeline's fixed mesh-pair data to ``contacts``. The
+        differentiable SDF force itself is evaluated by
+        :meth:`newton.solvers.SolverSemiImplicit.step`, preserving the usual
+        collision/solve boundary.
+
         .. experimental::
 
             This rigid-contact gradient path may change without prior notice.
@@ -1914,6 +1996,11 @@ class CollisionPipeline:
         # ignore them. Mirrors the assignment in CollisionPipeline.contacts().
         contacts._enable_rigid_soft_full_surface_contact = self.enable_rigid_soft_full_surface_contact
         contacts._soft_contact_deferred = self.enable_fused_soft_contact
+        contacts._differentiable_rigid_contact_data = self._differentiable_rigid_contact_data
+        if self._differentiable_rigid_contact_data is None:
+            contacts._differentiable_rigid_contact_pair_keys = contacts._empty_differentiable_rigid_contact_pair_keys
+        else:
+            contacts._differentiable_rigid_contact_pair_keys = self._differentiable_rigid_contact_data.pair_keys
         if not self.enable_fused_soft_contact:
             contacts._soft_contact_deferred_pairs = None
             contacts._soft_contact_deferred_pair_count = None

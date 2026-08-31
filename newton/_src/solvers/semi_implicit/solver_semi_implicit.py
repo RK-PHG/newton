@@ -4,6 +4,7 @@
 import warp as wp
 
 from ...core.types import override
+from ...geometry.differentiable_rigid_contact import eval_differentiable_rigid_contact_forces
 from ...sim import Contacts, Control, Model, State
 from ...utils.deprecation import deprecate_nonkeyword_arguments
 from ..coupled.interface import CouplingInterface
@@ -203,6 +204,13 @@ class SolverSemiImplicit(SolverBase, CouplingInterface):
             eval_body_contact_forces(
                 model, state_in, contacts, friction_smoothing=self.friction_smoothing, body_f_out=body_f_work
             )
+            if contacts is not None:
+                eval_differentiable_rigid_contact_forces(
+                    model,
+                    state_in,
+                    contacts._differentiable_rigid_contact_data,
+                    body_f_work,
+                )
 
             # particle shape contact
             if contacts is not None and contacts._soft_contact_deferred:

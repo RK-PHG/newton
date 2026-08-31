@@ -589,6 +589,9 @@ def eval_body_contact(
     shape_material_ka: wp.array[float],
     shape_material_mu: wp.array[float],
     shape_body: wp.array[int],
+    shape_count: int,
+    differentiable_pair_keys: wp.array[wp.int64],
+    differentiable_pair_count: int,
     contact_count: wp.array[int],
     contact_point0: wp.array[wp.vec3],
     contact_point1: wp.array[wp.vec3],
@@ -624,6 +627,24 @@ def eval_body_contact(
     shape_b = contact_shape1[tid]
     if shape_a == shape_b:
         return
+
+    # SolverSemiImplicit replaces these pairs with fixed-topology SDF forces.
+    # Other callers pass an empty key array and retain the discrete response.
+    if differentiable_pair_count > 0 and shape_a >= 0 and shape_b >= 0:
+        shape_low = wp.min(shape_a, shape_b)
+        shape_high = wp.max(shape_a, shape_b)
+        pair_key = wp.int64(shape_low) * wp.int64(shape_count) + wp.int64(shape_high)
+        lower = int(0)
+        upper = int(differentiable_pair_count)
+        while lower < upper:
+            middle = lower + (upper - lower) // 2
+            candidate_key = differentiable_pair_keys[middle]
+            if candidate_key < pair_key:
+                lower = middle + 1
+            else:
+                upper = middle
+        if lower < differentiable_pair_count and differentiable_pair_keys[lower] == pair_key:
+            return
     body_a = -1
     body_b = -1
     if shape_a >= 0:
@@ -828,6 +849,9 @@ def eval_body_contact_forces(
                 model.shape_material_ka,
                 model.shape_material_mu,
                 model.shape_body,
+                model.shape_count,
+                contacts._differentiable_rigid_contact_pair_keys,
+                contacts._differentiable_rigid_contact_pair_keys.shape[0],
                 contacts.rigid_contact_count,
                 contacts.rigid_contact_point0,
                 contacts.rigid_contact_point1,

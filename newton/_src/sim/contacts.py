@@ -229,7 +229,10 @@ class Contacts:
         self._soft_contact_deferred_pair_count = None
         self._soft_contact_deferred_pair_max = 0
         self._soft_contact_deferred_margin = 0.0
+        self._differentiable_rigid_contact_data = None
         with wp.ScopedDevice(device):
+            self._empty_differentiable_rigid_contact_pair_keys = wp.empty(0, dtype=wp.int64)
+            self._differentiable_rigid_contact_pair_keys = self._empty_differentiable_rigid_contact_pair_keys
             # One int32[2] array holding two independent contact counts: [0] rigid, [1] soft.
             # rigid_contact_count (the [0:1] view) and soft_contact_count (the [1:2] view) index
             # into this same array, so each remains a separate count; they share one array only so
