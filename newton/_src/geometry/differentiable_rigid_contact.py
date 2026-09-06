@@ -1,226 +1,825 @@
 # SPDX-FileCopyrightText: Copyright (c) 2026 The Newton Developers
 # SPDX-License-Identifier: Apache-2.0
 
-"""Fixed-topology differentiable rigid contact based on dense mesh SDFs."""
+"""RS1Dist-style differentiable witness points for rigid mesh contact.
+
+This module adapts the distance-based first-order randomized smoothing method
+from "Robust Differentiable Collision Detection for General Objects"
+(Chen et al., 2026, arXiv:2511.06267) to Newton and Warp.
+
+The ordinary Newton narrow phase remains the source of truth in the forward
+pass. Surface samples only define a surrogate derivative for each discrete
+witness point, so enabling this path does not replace collision detection or
+alter the forward contact points, normals, or penalty law.
+
+The paper's target-dependent adaptive sampling is not suitable for a generic
+simulation pipeline because downstream objectives are unavailable during
+collision detection. Newton therefore uses the paper's fixed-radius sampling
+variant. Coupled cross-witness Jacobians are evaluated at the discrete
+witnesses and solved as the paper's 3-by-3 implicit system.
+"""
 
 from __future__ import annotations
 
 import dataclasses
+import math
 
 import numpy as np
 import warp as wp
 
-from .sdf_utils import get_distance_to_mesh_normal
 from .types import GeoType, Mesh
 
 
-@wp.struct
-class _DenseSDFData:
-    values: wp.array3d[float]
-    lower: wp.vec3
-    upper: wp.vec3
-    inv_voxel_size: wp.vec3
+@wp.func
+def _exact_forward_smooth_backward(exact: wp.vec3, smooth: wp.vec3) -> wp.vec3:
+    """Return ``exact`` while routing its adjoint through ``smooth``."""
+    return exact
+
+
+@wp.func_grad(_exact_forward_smooth_backward)
+def _adj_exact_forward_smooth_backward(exact: wp.vec3, smooth: wp.vec3, adj_ret: wp.vec3):
+    wp.adjoint[smooth] += adj_ret
+
+
+@wp.func
+def _exact_forward_smooth_backward_scalar(exact: float, smooth: float) -> float:
+    """Return an exact scalar while routing its adjoint through a surrogate."""
+    return exact
+
+
+@wp.func_grad(_exact_forward_smooth_backward_scalar)
+def _adj_exact_forward_smooth_backward_scalar(exact: float, smooth: float, adj_ret: float):
+    wp.adjoint[smooth] += adj_ret
+
+
+@wp.func
+def _stop_gradient(value: wp.vec3) -> wp.vec3:
+    """Return a value without propagating an adjoint to its source."""
+    return value
+
+
+@wp.func_grad(_stop_gradient)
+def _adj_stop_gradient(value: wp.vec3, adj_ret: wp.vec3):
+    pass
+
+
+@wp.func
+def _implicit_witness_a(
+    exact_a: wp.vec3,
+    smooth_a: wp.vec3,
+    smooth_b: wp.vec3,
+    cross_a_b: wp.mat33,
+    cross_b_a: wp.mat33,
+) -> wp.vec3:
+    """Return exact witness A with the coupled RS1Dist adjoint."""
+    return exact_a
+
+
+@wp.func_grad(_implicit_witness_a)
+def _adj_implicit_witness_a(
+    exact_a: wp.vec3,
+    smooth_a: wp.vec3,
+    smooth_b: wp.vec3,
+    cross_a_b: wp.mat33,
+    cross_b_a: wp.mat33,
+    adj_ret: wp.vec3,
+):
+    system = wp.identity(3, float) - cross_a_b * cross_b_a
+    adjoint_a = wp.inverse(wp.transpose(system)) * adj_ret
+    adjoint_b = wp.transpose(cross_a_b) * adjoint_a
+    wp.adjoint[smooth_a] += adjoint_a
+    wp.adjoint[smooth_b] += adjoint_b
+
+
+@wp.func
+def _implicit_witness_b(
+    exact_b: wp.vec3,
+    smooth_a: wp.vec3,
+    smooth_b: wp.vec3,
+    cross_a_b: wp.mat33,
+    cross_b_a: wp.mat33,
+) -> wp.vec3:
+    """Return exact witness B with the coupled RS1Dist adjoint."""
+    return exact_b
+
+
+@wp.func_grad(_implicit_witness_b)
+def _adj_implicit_witness_b(
+    exact_b: wp.vec3,
+    smooth_a: wp.vec3,
+    smooth_b: wp.vec3,
+    cross_a_b: wp.mat33,
+    cross_b_a: wp.mat33,
+    adj_ret: wp.vec3,
+):
+    system = wp.identity(3, float) - cross_b_a * cross_a_b
+    adjoint_b = wp.inverse(wp.transpose(system)) * adj_ret
+    adjoint_a = wp.transpose(cross_b_a) * adjoint_b
+    wp.adjoint[smooth_a] += adjoint_a
+    wp.adjoint[smooth_b] += adjoint_b
+
+
+@wp.func
+def _contains_pair(pair_keys: wp.array[wp.int64], pair_count: int, shape_count: int, shape_a: int, shape_b: int):
+    if pair_count == 0 or shape_a < 0 or shape_b < 0:
+        return False
+    shape_low = wp.min(shape_a, shape_b)
+    shape_high = wp.max(shape_a, shape_b)
+    key = wp.int64(shape_low) * wp.int64(shape_count) + wp.int64(shape_high)
+    lower = int(0)
+    upper = pair_count
+    while lower < upper:
+        middle = lower + (upper - lower) // 2
+        candidate = pair_keys[middle]
+        if candidate < key:
+            lower = middle + 1
+        else:
+            upper = middle
+    return lower < pair_count and pair_keys[lower] == key
+
+
+@wp.func
+def _body_transform(body_q: wp.array[wp.transform], body: int) -> wp.transform:
+    if body >= 0:
+        return body_q[body]
+    return wp.transform_identity()
+
+
+@wp.func
+def _safe_length(value: wp.vec3, epsilon: float) -> float:
+    return wp.sqrt(wp.dot(value, value) + epsilon * epsilon)
+
+
+@wp.func
+def _candidate_world(
+    slot: int,
+    selected_sample_indices: wp.array[int],
+    selected_base: int,
+    sample_points: wp.array[wp.vec3],
+    sample_normals: wp.array[wp.vec3],
+    shape_world: wp.transform,
+    exact_world: wp.vec3,
+    exact_normal_world: wp.vec3,
+) -> tuple[wp.vec3, wp.vec3]:
+    sample = selected_sample_indices[selected_base + slot]
+    if sample < 0:
+        return exact_world, exact_normal_world
+    point = wp.transform_point(shape_world, sample_points[sample])
+    normal = wp.transform_vector(shape_world, sample_normals[sample])
+    return point, normal
+
+
+@wp.func
+def _distance_softmax_witness(
+    shape_world: wp.transform,
+    other_witness: wp.vec3,
+    exact_world: wp.vec3,
+    exact_normal_world: wp.vec3,
+    sample_points: wp.array[wp.vec3],
+    sample_normals: wp.array[wp.vec3],
+    selected_sample_indices: wp.array[int],
+    selected_sample_weights: wp.array[float],
+    selected_temperature_coefficients: wp.array[float],
+    selected_base: int,
+    selected_count: int,
+    temperature: float,
+) -> tuple[wp.vec3, wp.vec3]:
+    """Evaluate RS1Dist with an analytic softmax-weight surrogate."""
+    point_sum = wp.vec3(0.0)
+    normal_sum = wp.vec3(0.0)
+    smooth_temperature = float(0.0)
+    for slot in range(selected_count):
+        point, normal = _candidate_world(
+            slot,
+            selected_sample_indices,
+            selected_base,
+            sample_points,
+            sample_normals,
+            shape_world,
+            exact_world,
+            exact_normal_world,
+        )
+        weight = selected_sample_weights[selected_base + slot]
+        point_sum += weight * point
+        normal_sum += weight * normal
+        distance = _safe_length(point - other_witness, 1.0e-6)
+        smooth_temperature += selected_temperature_coefficients[selected_base + slot] * distance
+
+    differentiable_temperature = _exact_forward_smooth_backward_scalar(temperature, smooth_temperature)
+
+    # For softmax weights w_i=softmax(l_i),
+    #   ds = sum_i w_i dp_i + sum_i w_i (p_i-s) dl_i.
+    # The zero-forward proxies below add exactly the second term without
+    # differentiating the exp/reduction implementation itself. This avoids
+    # unstable generated adjoints for dynamic reductions in Warp.
+    point_correction = wp.vec3(0.0)
+    normal_correction = wp.vec3(0.0)
+    for slot in range(selected_count):
+        point, normal = _candidate_world(
+            slot,
+            selected_sample_indices,
+            selected_base,
+            sample_points,
+            sample_normals,
+            shape_world,
+            exact_world,
+            exact_normal_world,
+        )
+        weight = selected_sample_weights[selected_base + slot]
+        logit = -_safe_length(point - other_witness, 1.0e-6) / differentiable_temperature
+        point_coefficient = _stop_gradient(weight * (point - point_sum))
+        normal_coefficient = _stop_gradient(weight * (normal - normal_sum))
+        point_correction += _exact_forward_smooth_backward(wp.vec3(0.0), point_coefficient * logit)
+        normal_correction += _exact_forward_smooth_backward(wp.vec3(0.0), normal_coefficient * logit)
+
+    return point_sum + point_correction, normal_sum + normal_correction
 
 
 @wp.kernel(enable_backward=False)
-def _bake_dense_sdf(
-    mesh: wp.uint64,
-    lower: wp.vec3,
-    voxel_size: wp.vec3,
-    values: wp.array3d[float],
-):
-    i, j, k = wp.tid()
-    point = lower + wp.cw_mul(wp.vec3(float(i), float(j), float(k)), voxel_size)
-    values[i, j, k] = get_distance_to_mesh_normal(mesh, point, 1.0e6)
-
-
-@wp.func
-def _cubic_bspline_weights(t: float) -> tuple[wp.vec4, wp.vec4]:
-    one_minus_t = 1.0 - t
-    t2 = t * t
-    t3 = t2 * t
-    weights = wp.vec4(
-        one_minus_t * one_minus_t * one_minus_t / 6.0,
-        (3.0 * t3 - 6.0 * t2 + 4.0) / 6.0,
-        (-3.0 * t3 + 3.0 * t2 + 3.0 * t + 1.0) / 6.0,
-        t3 / 6.0,
-    )
-    derivatives = wp.vec4(
-        -0.5 * one_minus_t * one_minus_t,
-        1.5 * t2 - 2.0 * t,
-        -1.5 * t2 + t + 0.5,
-        0.5 * t2,
-    )
-    return weights, derivatives
-
-
-@wp.func
-def _sample_dense_sdf_gradient(sdf: _DenseSDFData, local_pos: wp.vec3) -> tuple[float, wp.vec3]:
-    """Evaluate a C2 cubic B-spline field and its analytical gradient."""
-    clamped = wp.vec3(
-        wp.clamp(local_pos[0], sdf.lower[0], sdf.upper[0]),
-        wp.clamp(local_pos[1], sdf.lower[1], sdf.upper[1]),
-        wp.clamp(local_pos[2], sdf.lower[2], sdf.upper[2]),
-    )
-    outside_delta = local_pos - clamped
-    outside_distance = wp.length(outside_delta)
-
-    grid = wp.cw_mul(clamped - sdf.lower, sdf.inv_voxel_size)
-    nx = sdf.values.shape[0]
-    ny = sdf.values.shape[1]
-    nz = sdf.values.shape[2]
-    cell_x = int(wp.floor(grid[0]))
-    cell_y = int(wp.floor(grid[1]))
-    cell_z = int(wp.floor(grid[2]))
-    tx = grid[0] - float(cell_x)
-    ty = grid[1] - float(cell_y)
-    tz = grid[2] - float(cell_z)
-    weights_x, derivatives_x = _cubic_bspline_weights(tx)
-    weights_y, derivatives_y = _cubic_bspline_weights(ty)
-    weights_z, derivatives_z = _cubic_bspline_weights(tz)
-
-    distance = float(0.0)
-    gx = float(0.0)
-    gy = float(0.0)
-    gz = float(0.0)
-    for x_offset in range(4):
-        ix = wp.clamp(cell_x + x_offset - 1, 0, nx - 1)
-        for y_offset in range(4):
-            iy = wp.clamp(cell_y + y_offset - 1, 0, ny - 1)
-            for z_offset in range(4):
-                iz = wp.clamp(cell_z + z_offset - 1, 0, nz - 1)
-                value = sdf.values[ix, iy, iz]
-                distance = distance + value * weights_x[x_offset] * weights_y[y_offset] * weights_z[z_offset]
-                gx = gx + value * derivatives_x[x_offset] * weights_y[y_offset] * weights_z[z_offset]
-                gy = gy + value * weights_x[x_offset] * derivatives_y[y_offset] * weights_z[z_offset]
-                gz = gz + value * weights_x[x_offset] * weights_y[y_offset] * derivatives_z[z_offset]
-
-    gradient = wp.cw_mul(wp.vec3(gx, gy, gz), sdf.inv_voxel_size)
-    if outside_distance > 0.0:
-        distance = distance + outside_distance
-        gradient = outside_delta / outside_distance
-    return distance, gradient
-
-
-@wp.func
-def _smooth_normal_force(distance: float, stiffness: float, margin: float) -> float:
-    """Return a C1 penalty force with compact support at ``margin``."""
-    if distance >= margin:
-        return 0.0
-    if distance > 0.0:
-        activation = margin - distance
-        return 0.5 * stiffness * activation * activation / margin
-    return stiffness * (0.5 * margin - distance)
-
-
-@wp.func
-def _shape_world_transform(
+def _select_local_samples(
     body_q: wp.array[wp.transform],
     shape_transform: wp.array[wp.transform],
-    body: int,
-    shape: int,
-) -> wp.transform:
-    transform = shape_transform[shape]
-    if body >= 0:
-        transform = wp.transform_multiply(body_q[body], transform)
-    return transform
+    shape_body: wp.array[int],
+    shape_count: int,
+    pair_keys: wp.array[wp.int64],
+    pair_count: int,
+    sample_points: wp.array[wp.vec3],
+    sample_normals: wp.array[wp.vec3],
+    shape_sample_start: wp.array[int],
+    shape_sample_count: wp.array[int],
+    shape_sample_radius: wp.array[float],
+    normal_cosine_threshold: float,
+    local_sample_count: int,
+    contact_count: wp.array[int],
+    contact_point0: wp.array[wp.vec3],
+    contact_point1: wp.array[wp.vec3],
+    contact_normal: wp.array[wp.vec3],
+    contact_shape0: wp.array[int],
+    contact_shape1: wp.array[int],
+    temperature_epsilon: float,
+    selected_sample_indices: wp.array[int],
+    selected_sample_counts: wp.array[int],
+    selected_sample_temperatures: wp.array[float],
+    selected_sample_weights: wp.array[float],
+    selected_temperature_coefficients: wp.array[float],
+    selected_cross_jacobians: wp.array[wp.mat33],
+):
+    directed_contact = wp.tid()
+    contact = directed_contact // 2
+    direction = directed_contact - contact * 2
+    if contact >= contact_count[0]:
+        return
+
+    shape_a = contact_shape0[contact]
+    shape_b = contact_shape1[contact]
+    if not _contains_pair(pair_keys, pair_count, shape_count, shape_a, shape_b):
+        return
+
+    shape = shape_a
+    point_body = contact_point0[contact]
+    normal_world = contact_normal[contact]
+    if direction == 1:
+        shape = shape_b
+        point_body = contact_point1[contact]
+        normal_world = -normal_world
+
+    body = shape_body[shape]
+    body_xform = _body_transform(body_q, body)
+    shape_world = wp.transform_multiply(body_xform, shape_transform[shape])
+    witness_world = wp.transform_point(body_xform, point_body)
+    inverse_shape_world = wp.transform_inverse(shape_world)
+    witness_local = wp.transform_point(inverse_shape_world, witness_world)
+    normal_local = wp.transform_vector(inverse_shape_world, normal_world)
+
+    output_base = directed_contact * local_sample_count
+    selected_sample_indices[output_base] = -1
+    selected_count = int(1)
+    sample_start = shape_sample_start[shape]
+    sample_count = shape_sample_count[shape]
+    radius = shape_sample_radius[shape]
+
+    # The global sequence is deterministically interleaved over vertices and
+    # faces, so taking the first valid samples avoids frame-to-frame RNG noise.
+    for local_index in range(sample_count):
+        if selected_count < local_sample_count:
+            sample = sample_start + local_index
+            delta = sample_points[sample] - witness_local
+            normal_alignment = wp.dot(sample_normals[sample], normal_local)
+            if wp.length(delta) <= radius and normal_alignment >= normal_cosine_threshold:
+                selected_sample_indices[output_base + selected_count] = sample
+                selected_count += 1
+
+    # If the filters return too few candidates, expand to unfiltered samples,
+    # matching the official implementation's threshold-relaxation fallback.
+    fallback_index = int(0)
+    while selected_count < local_sample_count and fallback_index < sample_count:
+        selected_sample_indices[output_base + selected_count] = sample_start + fallback_index
+        selected_count += 1
+        fallback_index += 1
+    selected_sample_counts[directed_contact] = selected_count
+
+    other_shape = shape_b
+    other_point_body = contact_point1[contact]
+    if direction == 1:
+        other_shape = shape_a
+        other_point_body = contact_point0[contact]
+    other_body_xform = _body_transform(body_q, shape_body[other_shape])
+    other_witness_world = wp.transform_point(other_body_xform, other_point_body)
+
+    distance_mean = float(0.0)
+    for slot in range(selected_count):
+        point, _normal = _candidate_world(
+            slot,
+            selected_sample_indices,
+            output_base,
+            sample_points,
+            sample_normals,
+            shape_world,
+            witness_world,
+            normal_world,
+        )
+        distance_mean += _safe_length(point - other_witness_world, temperature_epsilon)
+    distance_mean /= float(selected_count)
+
+    distance_variance = float(0.0)
+    for slot in range(selected_count):
+        point, _normal = _candidate_world(
+            slot,
+            selected_sample_indices,
+            output_base,
+            sample_points,
+            sample_normals,
+            shape_world,
+            witness_world,
+            normal_world,
+        )
+        distance = _safe_length(point - other_witness_world, temperature_epsilon)
+        centered = distance - distance_mean
+        distance_variance += centered * centered
+    distance_std = wp.sqrt(distance_variance / float(selected_count - 1) + temperature_epsilon * temperature_epsilon)
+    temperature = wp.sqrt(distance_std + temperature_epsilon)
+    selected_sample_temperatures[directed_contact] = temperature
+
+    for slot in range(selected_count):
+        point, _normal = _candidate_world(
+            slot,
+            selected_sample_indices,
+            output_base,
+            sample_points,
+            sample_normals,
+            shape_world,
+            witness_world,
+            normal_world,
+        )
+        distance = _safe_length(point - other_witness_world, temperature_epsilon)
+        selected_temperature_coefficients[output_base + slot] = (distance - distance_mean) / (
+            2.0 * float(selected_count - 1) * distance_std * temperature
+        )
+
+    max_logit = float(-1.0e30)
+    for slot in range(selected_count):
+        point, _normal = _candidate_world(
+            slot,
+            selected_sample_indices,
+            output_base,
+            sample_points,
+            sample_normals,
+            shape_world,
+            witness_world,
+            normal_world,
+        )
+        max_logit = wp.max(
+            max_logit,
+            -_safe_length(point - other_witness_world, temperature_epsilon) / temperature,
+        )
+
+    weight_sum = float(0.0)
+    for slot in range(selected_count):
+        point, _normal = _candidate_world(
+            slot,
+            selected_sample_indices,
+            output_base,
+            sample_points,
+            sample_normals,
+            shape_world,
+            witness_world,
+            normal_world,
+        )
+        logit = -_safe_length(point - other_witness_world, temperature_epsilon) / temperature
+        weight = wp.exp(logit - max_logit)
+        selected_sample_weights[output_base + slot] = weight
+        weight_sum += weight
+    for slot in range(selected_count):
+        selected_sample_weights[output_base + slot] /= weight_sum
+
+    point_sum = wp.vec3(0.0)
+    for slot in range(selected_count):
+        point, _normal = _candidate_world(
+            slot,
+            selected_sample_indices,
+            output_base,
+            sample_points,
+            sample_normals,
+            shape_world,
+            witness_world,
+            normal_world,
+        )
+        point_sum += selected_sample_weights[output_base + slot] * point
+
+    temperature_gradient = wp.vec3(0.0)
+    for slot in range(selected_count):
+        point, _normal = _candidate_world(
+            slot,
+            selected_sample_indices,
+            output_base,
+            sample_points,
+            sample_normals,
+            shape_world,
+            witness_world,
+            normal_world,
+        )
+        delta = point - other_witness_world
+        temperature_gradient -= (
+            selected_temperature_coefficients[output_base + slot] * delta / _safe_length(delta, temperature_epsilon)
+        )
+
+    cross_jacobian = wp.mat33(0.0)
+    for slot in range(selected_count):
+        point, _normal = _candidate_world(
+            slot,
+            selected_sample_indices,
+            output_base,
+            sample_points,
+            sample_normals,
+            shape_world,
+            witness_world,
+            normal_world,
+        )
+        delta = point - other_witness_world
+        distance = _safe_length(delta, temperature_epsilon)
+        logit_gradient = delta / (temperature * distance) + distance * temperature_gradient / (
+            temperature * temperature
+        )
+        coefficient = selected_sample_weights[output_base + slot] * (point - point_sum)
+        cross_jacobian += wp.outer(coefficient, logit_gradient)
+    selected_cross_jacobians[directed_contact] = cross_jacobian
 
 
 @wp.kernel
-def _eval_differentiable_rigid_pair(
+def _eval_rs1dist_contacts(
     body_q: wp.array[wp.transform],
+    body_qd: wp.array[wp.spatial_vector],
     body_com: wp.array[wp.vec3],
     shape_transform: wp.array[wp.transform],
     shape_body: wp.array[int],
     shape_material_ke: wp.array[float],
-    shape_a: int,
-    shape_b: int,
-    samples_a: wp.array[wp.vec3],
-    samples_b: wp.array[wp.vec3],
-    weights_a: wp.array[float],
-    weights_b: wp.array[float],
-    sdf_a: _DenseSDFData,
-    sdf_b: _DenseSDFData,
-    margin: float,
+    shape_material_kd: wp.array[float],
+    shape_material_kf: wp.array[float],
+    shape_material_ka: wp.array[float],
+    shape_material_mu: wp.array[float],
+    shape_count: int,
+    pair_keys: wp.array[wp.int64],
+    pair_count: int,
+    sample_points: wp.array[wp.vec3],
+    sample_normals: wp.array[wp.vec3],
+    selected_sample_indices: wp.array[int],
+    selected_sample_counts: wp.array[int],
+    selected_sample_temperatures: wp.array[float],
+    selected_sample_weights: wp.array[float],
+    selected_temperature_coefficients: wp.array[float],
+    selected_cross_jacobians: wp.array[wp.mat33],
+    local_sample_count: int,
+    temperature_epsilon: float,
+    contact_count: wp.array[int],
+    contact_point0: wp.array[wp.vec3],
+    contact_point1: wp.array[wp.vec3],
+    contact_normal: wp.array[wp.vec3],
+    contact_shape0: wp.array[int],
+    contact_shape1: wp.array[int],
+    contact_margin0: wp.array[float],
+    contact_margin1: wp.array[float],
+    rigid_contact_stiffness: wp.array[float],
+    rigid_contact_damping: wp.array[float],
+    rigid_contact_friction_scale: wp.array[float],
+    friction_smoothing: float,
     body_f: wp.array[wp.spatial_vector],
 ):
-    """Integrate two directed surface-to-SDF contact energies for one pair."""
-    tid = wp.tid()
-    sample_count = samples_a.shape[0]
-    direction = tid // sample_count
-    sample_index = tid - direction * sample_count
+    contact = wp.tid()
+    if contact >= contact_count[0]:
+        return
 
-    source_shape = shape_a
-    target_shape = shape_b
-    sample_local = samples_a[sample_index]
-    sample_weight = weights_a[sample_index]
-    if direction == 1:
-        source_shape = shape_b
-        target_shape = shape_a
-        sample_local = samples_b[sample_index]
-        sample_weight = weights_b[sample_index]
+    shape_a = contact_shape0[contact]
+    shape_b = contact_shape1[contact]
+    if not _contains_pair(pair_keys, pair_count, shape_count, shape_a, shape_b):
+        return
 
-    source_body = shape_body[source_shape]
-    target_body = shape_body[target_shape]
-    source_xform = _shape_world_transform(body_q, shape_transform, source_body, source_shape)
-    target_xform = _shape_world_transform(body_q, shape_transform, target_body, target_shape)
-    sample_world = wp.transform_point(source_xform, sample_local)
-    sample_target = wp.transform_point(wp.transform_inverse(target_xform), sample_world)
+    body_a = shape_body[shape_a]
+    body_b = shape_body[shape_b]
+    body_xform_a = _body_transform(body_q, body_a)
+    body_xform_b = _body_transform(body_q, body_b)
+    shape_world_a = wp.transform_multiply(body_xform_a, shape_transform[shape_a])
+    shape_world_b = wp.transform_multiply(body_xform_b, shape_transform[shape_b])
 
-    distance = float(0.0)
-    normal_target = wp.vec3(0.0)
-    if direction == 0:
-        distance, normal_target = _sample_dense_sdf_gradient(sdf_b, sample_target)
-    else:
-        distance, normal_target = _sample_dense_sdf_gradient(sdf_a, sample_target)
-    normal_length = wp.length(normal_target)
-    stiffness = 0.5 * (shape_material_ke[shape_a] + shape_material_ke[shape_b])
-    force_magnitude = _smooth_normal_force(distance, stiffness, margin)
+    exact_normal_ab = contact_normal[contact]
+    exact_point_a = wp.transform_point(body_xform_a, contact_point0[contact])
+    exact_point_b = wp.transform_point(body_xform_b, contact_point1[contact])
 
-    if force_magnitude > 0.0 and normal_length > 1.0e-8:
-        normal_target = normal_target / normal_length
-        normal_world = wp.quat_rotate(wp.transform_get_rotation(target_xform), normal_target)
-        # The two directed integrals share the pair energy. Each direction has
-        # unit-sum quadrature weights, so material stiffness retains N/m units.
-        force = normal_world * force_magnitude * sample_weight * 0.5
+    ke = 0.5 * (shape_material_ke[shape_a] + shape_material_ke[shape_b])
+    kd = 0.5 * (shape_material_kd[shape_a] + shape_material_kd[shape_b])
+    kf = 0.5 * (shape_material_kf[shape_a] + shape_material_kf[shape_b])
+    ka = 0.5 * (shape_material_ka[shape_a] + shape_material_ka[shape_b])
+    mu = 0.5 * (shape_material_mu[shape_a] + shape_material_mu[shape_b])
+    if rigid_contact_stiffness:
+        contact_ke = rigid_contact_stiffness[contact]
+        contact_kd = rigid_contact_damping[contact]
+        contact_mu = rigid_contact_friction_scale[contact]
+        if contact_ke > 0.0:
+            ke = contact_ke
+        if contact_kd > 0.0:
+            kd = contact_kd
+        if contact_mu > 0.0:
+            mu *= contact_mu
 
-        if source_body >= 0:
-            source_com = wp.transform_point(body_q[source_body], body_com[source_body])
-            source_torque = wp.cross(sample_world - source_com, force)
-            wp.atomic_add(body_f, source_body, wp.spatial_vector(force, source_torque))
-        if target_body >= 0:
-            target_com = wp.transform_point(body_q[target_body], body_com[target_body])
-            target_force = -force
-            target_torque = wp.cross(sample_world - target_com, target_force)
-            wp.atomic_add(body_f, target_body, wp.spatial_vector(target_force, target_torque))
+    # Speculative contacts that are outside the force law must not enter the
+    # surrogate. Their zero output adjoint can otherwise still encounter
+    # singular intermediate derivatives during Warp's generated backward.
+    exact_force_normal = -exact_normal_ab
+    exact_force_point_a = exact_point_a - contact_margin0[contact] * exact_force_normal
+    exact_force_point_b = exact_point_b + contact_margin1[contact] * exact_force_normal
+    if wp.dot(exact_force_normal, exact_force_point_a - exact_force_point_b) >= ka:
+        return
+
+    base_a = (contact * 2) * local_sample_count
+    base_b = (contact * 2 + 1) * local_sample_count
+    count_a = selected_sample_counts[contact * 2]
+    count_b = selected_sample_counts[contact * 2 + 1]
+
+    # These terms contain the direct/self Jacobians. The custom witness proxies
+    # below solve the paper's coupled 3-by-3 cross-witness system in reverse.
+    smooth_point_a, smooth_normal_a = _distance_softmax_witness(
+        shape_world_a,
+        _stop_gradient(exact_point_b),
+        exact_point_a,
+        exact_normal_ab,
+        sample_points,
+        sample_normals,
+        selected_sample_indices,
+        selected_sample_weights,
+        selected_temperature_coefficients,
+        base_a,
+        count_a,
+        selected_sample_temperatures[contact * 2],
+    )
+    smooth_point_b, smooth_normal_b = _distance_softmax_witness(
+        shape_world_b,
+        _stop_gradient(exact_point_a),
+        exact_point_b,
+        -exact_normal_ab,
+        sample_points,
+        sample_normals,
+        selected_sample_indices,
+        selected_sample_weights,
+        selected_temperature_coefficients,
+        base_b,
+        count_b,
+        selected_sample_temperatures[contact * 2 + 1],
+    )
+    cross_a_b = selected_cross_jacobians[contact * 2]
+    cross_b_a = selected_cross_jacobians[contact * 2 + 1]
+    point_a = _implicit_witness_a(exact_point_a, smooth_point_a, smooth_point_b, cross_a_b, cross_b_a)
+    point_b = _implicit_witness_b(exact_point_b, smooth_point_a, smooth_point_b, cross_a_b, cross_b_a)
+
+    # Re-evaluate the normal fields at the exact forward witnesses. Their
+    # cross-witness adjoints flow through the same implicit point proxies.
+    _unused_point_a, smooth_normal_a = _distance_softmax_witness(
+        shape_world_a,
+        point_b,
+        exact_point_a,
+        exact_normal_ab,
+        sample_points,
+        sample_normals,
+        selected_sample_indices,
+        selected_sample_weights,
+        selected_temperature_coefficients,
+        base_a,
+        count_a,
+        selected_sample_temperatures[contact * 2],
+    )
+    _unused_point_b, smooth_normal_b = _distance_softmax_witness(
+        shape_world_b,
+        point_a,
+        exact_point_b,
+        -exact_normal_ab,
+        sample_points,
+        sample_normals,
+        selected_sample_indices,
+        selected_sample_weights,
+        selected_temperature_coefficients,
+        base_b,
+        count_b,
+        selected_sample_temperatures[contact * 2 + 1],
+    )
+    smooth_normal_delta = smooth_normal_a - smooth_normal_b
+    smooth_normal_ab = smooth_normal_delta / _safe_length(smooth_normal_delta, temperature_epsilon)
+    if wp.dot(smooth_normal_ab, exact_normal_ab) < 0.0:
+        smooth_normal_ab = -smooth_normal_ab
+    normal_ab = _exact_forward_smooth_backward(exact_normal_ab, smooth_normal_ab)
+
+    # Match eval_body_contact's forward penalty law; only its witness-point
+    # derivative has been replaced.
+    normal = -normal_ab
+    point_a -= contact_margin0[contact] * normal
+    point_b += contact_margin1[contact] * normal
+
+    distance = wp.dot(normal, point_a - point_b)
+
+    r_a = wp.vec3(0.0)
+    r_b = wp.vec3(0.0)
+    point_velocity_a = wp.vec3(0.0)
+    point_velocity_b = wp.vec3(0.0)
+    if body_a >= 0:
+        r_a = point_a - wp.transform_point(body_xform_a, body_com[body_a])
+        velocity_a = body_qd[body_a]
+        point_velocity_a = wp.spatial_top(velocity_a) + wp.cross(wp.spatial_bottom(velocity_a), r_a)
+    if body_b >= 0:
+        r_b = point_b - wp.transform_point(body_xform_b, body_com[body_b])
+        velocity_b = body_qd[body_b]
+        point_velocity_b = wp.spatial_top(velocity_b) + wp.cross(wp.spatial_bottom(velocity_b), r_b)
+    relative_velocity = point_velocity_a - point_velocity_b
+    normal_velocity = wp.dot(normal, relative_velocity)
+    tangent_velocity = relative_velocity - normal * normal_velocity
+
+    elastic_force = distance * ke
+    damping_force = wp.min(normal_velocity, 0.0) * kd * wp.step(distance)
+    friction_force = wp.vec3(0.0)
+    if distance < 0.0:
+        tangent_speed = wp.norm_huber(tangent_velocity, delta=friction_smoothing)
+        if tangent_speed > 0.0:
+            friction_direction = tangent_velocity / tangent_speed
+            friction_force = friction_direction * wp.min(kf * tangent_speed, -mu * (elastic_force + damping_force))
+
+    total_force = normal * (elastic_force + damping_force) + friction_force
+    if body_a >= 0:
+        wp.atomic_sub(body_f, body_a, wp.spatial_vector(total_force, wp.cross(r_a, total_force)))
+    if body_b >= 0:
+        wp.atomic_add(body_f, body_b, wp.spatial_vector(total_force, wp.cross(r_b, total_force)))
 
 
-@dataclasses.dataclass
-class _PreparedShape:
-    samples: wp.array
-    weights: wp.array
-    sdf: _DenseSDFData
+@wp.kernel
+def _eval_rs1dist_kinematics(
+    body_q: wp.array[wp.transform],
+    shape_transform: wp.array[wp.transform],
+    shape_body: wp.array[int],
+    shape_count: int,
+    pair_keys: wp.array[wp.int64],
+    pair_count: int,
+    sample_points: wp.array[wp.vec3],
+    sample_normals: wp.array[wp.vec3],
+    selected_sample_indices: wp.array[int],
+    selected_sample_counts: wp.array[int],
+    selected_sample_temperatures: wp.array[float],
+    selected_sample_weights: wp.array[float],
+    selected_temperature_coefficients: wp.array[float],
+    selected_cross_jacobians: wp.array[wp.mat33],
+    local_sample_count: int,
+    temperature_epsilon: float,
+    contact_count: wp.array[int],
+    contact_point0: wp.array[wp.vec3],
+    contact_point1: wp.array[wp.vec3],
+    contact_normal: wp.array[wp.vec3],
+    contact_shape0: wp.array[int],
+    contact_shape1: wp.array[int],
+    contact_margin0: wp.array[float],
+    contact_margin1: wp.array[float],
+    out_distance: wp.array[float],
+    out_point0_world: wp.array[wp.vec3],
+    out_point1_world: wp.array[wp.vec3],
+):
+    """Write exact contact kinematics with RS1Dist witness adjoints."""
+    contact = wp.tid()
+    if contact >= contact_count[0]:
+        return
 
+    shape_a = contact_shape0[contact]
+    shape_b = contact_shape1[contact]
+    body_a = int(-1)
+    body_b = int(-1)
+    if shape_a >= 0:
+        body_a = shape_body[shape_a]
+    if shape_b >= 0:
+        body_b = shape_body[shape_b]
+    body_xform_a = _body_transform(body_q, body_a)
+    body_xform_b = _body_transform(body_q, body_b)
+    exact_normal_ab = contact_normal[contact]
+    exact_point_a = wp.transform_point(body_xform_a, contact_point0[contact])
+    exact_point_b = wp.transform_point(body_xform_b, contact_point1[contact])
 
-@dataclasses.dataclass
-class _PreparedPair:
-    shape_a: int
-    shape_b: int
-    shape_a_data: _PreparedShape
-    shape_b_data: _PreparedShape
-    margin: float
+    if not _contains_pair(pair_keys, pair_count, shape_count, shape_a, shape_b):
+        if out_distance.shape[0] > 0:
+            thickness = contact_margin0[contact] + contact_margin1[contact]
+            out_distance[contact] = wp.dot(exact_normal_ab, exact_point_b - exact_point_a) - thickness
+        if out_point0_world.shape[0] > 0:
+            out_point0_world[contact] = exact_point_a
+        if out_point1_world.shape[0] > 0:
+            out_point1_world[contact] = exact_point_b
+        return
+
+    shape_world_a = wp.transform_multiply(body_xform_a, shape_transform[shape_a])
+    shape_world_b = wp.transform_multiply(body_xform_b, shape_transform[shape_b])
+
+    base_a = (contact * 2) * local_sample_count
+    base_b = (contact * 2 + 1) * local_sample_count
+    smooth_point_a, _smooth_normal_a = _distance_softmax_witness(
+        shape_world_a,
+        _stop_gradient(exact_point_b),
+        exact_point_a,
+        exact_normal_ab,
+        sample_points,
+        sample_normals,
+        selected_sample_indices,
+        selected_sample_weights,
+        selected_temperature_coefficients,
+        base_a,
+        selected_sample_counts[contact * 2],
+        selected_sample_temperatures[contact * 2],
+    )
+    smooth_point_b, _smooth_normal_b = _distance_softmax_witness(
+        shape_world_b,
+        _stop_gradient(exact_point_a),
+        exact_point_b,
+        -exact_normal_ab,
+        sample_points,
+        sample_normals,
+        selected_sample_indices,
+        selected_sample_weights,
+        selected_temperature_coefficients,
+        base_b,
+        selected_sample_counts[contact * 2 + 1],
+        selected_sample_temperatures[contact * 2 + 1],
+    )
+    cross_a_b = selected_cross_jacobians[contact * 2]
+    cross_b_a = selected_cross_jacobians[contact * 2 + 1]
+    point_a = _implicit_witness_a(exact_point_a, smooth_point_a, smooth_point_b, cross_a_b, cross_b_a)
+    point_b = _implicit_witness_b(exact_point_b, smooth_point_a, smooth_point_b, cross_a_b, cross_b_a)
+
+    if out_distance.shape[0] > 0:
+        thickness = contact_margin0[contact] + contact_margin1[contact]
+        out_distance[contact] = wp.dot(exact_normal_ab, point_b - point_a) - thickness
+    if out_point0_world.shape[0] > 0:
+        out_point0_world[contact] = point_a
+    if out_point1_world.shape[0] > 0:
+        out_point1_world[contact] = point_b
 
 
 @dataclasses.dataclass
 class DifferentiableRigidContactData:
-    """Internal device data attached to a :class:`Contacts` instance."""
+    """Prepared RS1Dist samples and per-contact work buffers."""
 
-    pairs: tuple[_PreparedPair, ...]
     pair_keys: wp.array
+    sample_points: wp.array
+    sample_normals: wp.array
+    shape_sample_start: wp.array
+    shape_sample_count: wp.array
+    shape_sample_radius: wp.array
+    selected_sample_indices: wp.array | None
+    selected_sample_counts: wp.array | None
+    selected_sample_temperatures: wp.array | None
+    selected_sample_weights: wp.array | None
+    selected_temperature_coefficients: wp.array | None
+    selected_cross_jacobians: wp.array | None
+    local_sample_count: int
+    normal_cosine_threshold: float
+    temperature_epsilon: float
+
+    def with_workspace(self, rigid_contact_max: int) -> DifferentiableRigidContactData:
+        """Return a view sharing immutable samples with private contact work buffers."""
+        device = self.sample_points.device
+        return dataclasses.replace(
+            self,
+            selected_sample_indices=wp.full(
+                rigid_contact_max * 2 * self.local_sample_count,
+                value=-1,
+                dtype=int,
+                device=device,
+            ),
+            selected_sample_counts=wp.zeros(rigid_contact_max * 2, dtype=int, device=device),
+            selected_sample_temperatures=wp.zeros(rigid_contact_max * 2, dtype=float, device=device),
+            selected_sample_weights=wp.zeros(
+                rigid_contact_max * 2 * self.local_sample_count,
+                dtype=float,
+                device=device,
+            ),
+            selected_temperature_coefficients=wp.zeros(
+                rigid_contact_max * 2 * self.local_sample_count,
+                dtype=float,
+                device=device,
+            ),
+            selected_cross_jacobians=wp.zeros(rigid_contact_max * 2, dtype=wp.mat33, device=device),
+        )
 
 
 def find_differentiable_rigid_pairs(model, candidate_pairs: wp.array | None = None) -> list[tuple[int, int]]:
-    """Return fixed mesh-mesh pairs supported by the differentiable path."""
+    """Return collidable mesh pairs supported by the RS1Dist path."""
     if candidate_pairs is None:
         candidate_pairs = model.shape_contact_pairs
     if candidate_pairs is None or candidate_pairs.shape[0] == 0:
@@ -243,151 +842,269 @@ def find_differentiable_rigid_pairs(model, candidate_pairs: wp.array | None = No
     return sorted(set(pairs))
 
 
-def _prepare_shape(model, shape: int, resolution: int, padding: float, sample_count: int) -> _PreparedShape:
-    mesh = model.shape_source[shape]
-    scale = np.asarray(model.shape_scale.numpy()[shape], dtype=np.float32)
-    if np.any(np.abs(scale) < 1.0e-8):
-        raise ValueError(f"Differentiable rigid contact shape {shape} has a degenerate scale {scale.tolist()}")
+def _sample_surface(mesh: Mesh, scale: np.ndarray, sample_count: int) -> tuple[np.ndarray, np.ndarray, float]:
+    """Build a deterministic vertex/surface candidate set like DiffCollision."""
     vertices = np.asarray(mesh.vertices, dtype=np.float32) * scale[None, :]
     indices = np.asarray(mesh.indices, dtype=np.int32).reshape((-1, 3)).copy()
     if float(np.prod(scale)) < 0.0:
         indices[:, [1, 2]] = indices[:, [2, 1]]
-
     triangles = vertices[indices]
-    triangle_areas = 0.5 * np.linalg.norm(
-        np.cross(triangles[:, 1] - triangles[:, 0], triangles[:, 2] - triangles[:, 0]), axis=1
-    )
-    total_area = float(np.sum(triangle_areas))
-    if not np.isfinite(total_area) or total_area <= 0.0:
-        raise ValueError(f"Differentiable rigid contact shape {shape} has no non-degenerate triangle area")
+    cross = np.cross(triangles[:, 1] - triangles[:, 0], triangles[:, 2] - triangles[:, 0])
+    double_areas = np.linalg.norm(cross, axis=1)
+    surface_area = 0.5 * float(np.sum(double_areas))
+    if not np.isfinite(surface_area) or surface_area <= 0.0:
+        raise ValueError("Differentiable rigid contact mesh has no non-degenerate triangle area")
+    face_normals = cross / np.maximum(double_areas[:, None], 1.0e-12)
 
-    cumulative_area = np.cumsum(triangle_areas, dtype=np.float64)
-    area_targets = (np.arange(sample_count, dtype=np.float64) + 0.5) * (total_area / sample_count)
-    sampled_triangles = np.searchsorted(cumulative_area, area_targets, side="left")
-    # Area stratification chooses triangles; two irrational rotations then
-    # distribute repeated selections inside each triangle instead of emitting
-    # duplicate centroids on low-face-count meshes such as boxes.
-    sample_ids = np.arange(sample_count, dtype=np.float64) + 0.5
-    u = np.mod(sample_ids * 0.6180339887498949, 1.0)
-    v = np.mod(sample_ids * 0.7548776662466927, 1.0)
-    sqrt_u = np.sqrt(u)
-    barycentric = np.column_stack((1.0 - sqrt_u, sqrt_u * (1.0 - v), sqrt_u * v))
-    samples = np.sum(triangles[sampled_triangles] * barycentric[:, :, None], axis=1).astype(np.float32)
-    weights = np.full(sample_count, 1.0 / sample_count, dtype=np.float32)
+    vertex_normals = np.zeros_like(vertices)
+    for corner in range(3):
+        np.add.at(vertex_normals, indices[:, corner], cross)
+    vertex_normals /= np.maximum(np.linalg.norm(vertex_normals, axis=1, keepdims=True), 1.0e-12)
 
-    lower = vertices.min(axis=0) - padding
-    requested_upper = vertices.max(axis=0) + padding
-    extent = requested_upper - lower
-    voxel_size_scalar = float(np.max(extent)) / float(resolution)
-    dimensions = np.ceil(extent / voxel_size_scalar).astype(np.int32) + 1
-    voxel_size = np.full(3, voxel_size_scalar, dtype=np.float32)
-    upper = lower + (dimensions - 1) * voxel_size
+    vertex_count = min((sample_count + 1) // 2, len(vertices))
+    surface_count = sample_count - vertex_count
+    if vertex_count > 0:
+        vertex_ids = np.floor((np.arange(vertex_count) + 0.5) * len(vertices) / vertex_count).astype(np.int32)
+        vertex_points = vertices[vertex_ids]
+        vertex_sample_normals = vertex_normals[vertex_ids]
+    else:
+        vertex_points = np.empty((0, 3), dtype=np.float32)
+        vertex_sample_normals = np.empty((0, 3), dtype=np.float32)
 
-    device = model.device
-    values = wp.zeros(
-        shape=tuple(int(value) for value in dimensions),
-        dtype=float,
-        device=device,
-        requires_grad=True,
-    )
-    query_points = wp.array(vertices, dtype=wp.vec3, device=device)
-    query_indices = wp.array(indices.reshape(-1), dtype=wp.int32, device=device)
-    query_mesh = wp.Mesh(points=query_points, indices=query_indices)
-    wp.launch(
-        _bake_dense_sdf,
-        dim=tuple(int(value) for value in dimensions),
-        inputs=[query_mesh.id, wp.vec3(lower), wp.vec3(voxel_size)],
-        outputs=[values],
-        device=device,
-    )
-    # The bake owns a temporary query BVH; finish before releasing it.
-    wp.synchronize_device(device)
+    if surface_count > 0:
+        cumulative_area = np.cumsum(double_areas, dtype=np.float64)
+        targets = (np.arange(surface_count, dtype=np.float64) + 0.5) * (2.0 * surface_area / surface_count)
+        triangle_ids = np.searchsorted(cumulative_area, targets, side="left")
+        sample_ids = np.arange(surface_count, dtype=np.float64) + 0.5
+        u = np.mod(sample_ids * 0.6180339887498949, 1.0)
+        v = np.mod(sample_ids * 0.7548776662466927, 1.0)
+        sqrt_u = np.sqrt(u)
+        barycentric = np.column_stack((1.0 - sqrt_u, sqrt_u * (1.0 - v), sqrt_u * v))
+        surface_points = np.sum(triangles[triangle_ids] * barycentric[:, :, None], axis=1).astype(np.float32)
+        surface_normals = face_normals[triangle_ids].astype(np.float32)
+    else:
+        surface_points = np.empty((0, 3), dtype=np.float32)
+        surface_normals = np.empty((0, 3), dtype=np.float32)
 
-    sdf = _DenseSDFData()
-    sdf.values = values
-    sdf.lower = wp.vec3(lower)
-    sdf.upper = wp.vec3(upper)
-    sdf.inv_voxel_size = wp.vec3(1.0 / voxel_size)
-    return _PreparedShape(
-        samples=wp.array(samples, dtype=wp.vec3, device=device),
-        weights=wp.array(weights, dtype=float, device=device),
-        sdf=sdf,
-    )
+    points = []
+    normals = []
+    for sample in range(max(vertex_count, surface_count)):
+        if sample < vertex_count:
+            points.append(vertex_points[sample])
+            normals.append(vertex_sample_normals[sample])
+        if sample < surface_count:
+            points.append(surface_points[sample])
+            normals.append(surface_normals[sample])
+    return np.asarray(points, dtype=np.float32), np.asarray(normals, dtype=np.float32), surface_area
 
 
 def prepare_differentiable_rigid_contacts(
     model,
     pairs: list[tuple[int, int]],
     *,
-    sdf_resolution: int,
-    surface_sample_count: int,
-    contact_margin: float,
+    global_sample_count: int,
+    local_sample_count: int,
+    sample_radius_scale: float,
+    min_sample_radius: float,
+    normal_angle: float,
 ) -> DifferentiableRigidContactData:
-    """Bake per-shape data and assemble fixed differentiable contact pairs."""
-    shape_margins = model.shape_margin.numpy()
-    max_shape_margin = max((float(shape_margins[shape]) for pair in pairs for shape in pair), default=0.0)
+    """Pre-sample mesh surfaces and allocate fixed-size RS1Dist work buffers."""
     shape_scales = model.shape_scale.numpy()
-    max_extent = 0.0
-    for pair in pairs:
-        for shape in pair:
-            mesh = model.shape_source[shape]
-            vertices = np.asarray(mesh.vertices, dtype=np.float32) * shape_scales[shape][None, :]
-            max_extent = max(max_extent, float(np.max(vertices.max(axis=0) - vertices.min(axis=0))))
-    padding = contact_margin + max_shape_margin + 2.0 * max_extent / float(sdf_resolution)
+    participating_shapes = sorted({shape for pair in pairs for shape in pair})
+    shape_sample_start = np.zeros(model.shape_count, dtype=np.int32)
+    shape_sample_count = np.zeros(model.shape_count, dtype=np.int32)
+    shape_sample_radius = np.zeros(model.shape_count, dtype=np.float32)
+    packed_points = []
+    packed_normals = []
+    packed_count = 0
 
-    prepared_shapes = {}
-    prepared_pairs = []
-    for shape_a, shape_b in pairs:
-        for shape in (shape_a, shape_b):
-            if shape not in prepared_shapes:
-                prepared_shapes[shape] = _prepare_shape(
-                    model,
-                    shape,
-                    sdf_resolution,
-                    padding,
-                    surface_sample_count,
-                )
-        prepared_pairs.append(
-            _PreparedPair(
-                shape_a=shape_a,
-                shape_b=shape_b,
-                shape_a_data=prepared_shapes[shape_a],
-                shape_b_data=prepared_shapes[shape_b],
-                margin=contact_margin + float(shape_margins[shape_a]) + float(shape_margins[shape_b]),
-            )
-        )
+    for shape in participating_shapes:
+        mesh = model.shape_source[shape]
+        scale = np.asarray(shape_scales[shape], dtype=np.float32)
+        if np.any(np.abs(scale) < 1.0e-8):
+            raise ValueError(f"Differentiable rigid contact shape {shape} has a degenerate scale {scale.tolist()}")
+        # The official implementation reserves the final global-sample slot
+        # for the exact discrete witness before local sampling.
+        points, normals, surface_area = _sample_surface(mesh, scale, global_sample_count - 1)
+        shape_sample_start[shape] = packed_count
+        shape_sample_count[shape] = len(points)
+        object_scale = float(np.linalg.norm(points.max(axis=0) - points.min(axis=0)))
+        safe_radius = 2.0 * math.sqrt(local_sample_count * surface_area / (math.pi * global_sample_count))
+        shape_sample_radius[shape] = max(sample_radius_scale * object_scale, min_sample_radius, safe_radius)
+        packed_points.append(points)
+        packed_normals.append(normals)
+        packed_count += len(points)
 
+    points_np = np.concatenate(packed_points, axis=0)
+    normals_np = np.concatenate(packed_normals, axis=0)
     pair_keys_np = np.asarray([shape_a * model.shape_count + shape_b for shape_a, shape_b in pairs], dtype=np.int64)
+    device = model.device
     return DifferentiableRigidContactData(
-        pairs=tuple(prepared_pairs),
-        pair_keys=wp.array(pair_keys_np, dtype=wp.int64, device=model.device),
+        pair_keys=wp.array(pair_keys_np, dtype=wp.int64, device=device),
+        sample_points=wp.array(points_np, dtype=wp.vec3, device=device),
+        sample_normals=wp.array(normals_np, dtype=wp.vec3, device=device),
+        shape_sample_start=wp.array(shape_sample_start, dtype=int, device=device),
+        shape_sample_count=wp.array(shape_sample_count, dtype=int, device=device),
+        shape_sample_radius=wp.array(shape_sample_radius, dtype=float, device=device),
+        selected_sample_indices=None,
+        selected_sample_counts=None,
+        selected_sample_temperatures=None,
+        selected_sample_weights=None,
+        selected_temperature_coefficients=None,
+        selected_cross_jacobians=None,
+        local_sample_count=local_sample_count,
+        normal_cosine_threshold=math.cos(normal_angle),
+        temperature_epsilon=1.0e-4,
     )
 
 
-def eval_differentiable_rigid_contact_forces(model, state, data, body_f: wp.array) -> None:
-    """Evaluate all prepared pairs into the solver's body-force accumulator."""
-    if data is None:
+def _prepare_contact_witnesses(model, state, contacts, data: DifferentiableRigidContactData) -> None:
+    """Select local samples and precompute their RS1Dist coefficients."""
+    if (
+        data.selected_sample_indices is None
+        or data.selected_sample_counts is None
+        or data.selected_sample_temperatures is None
+        or data.selected_sample_weights is None
+        or data.selected_temperature_coefficients is None
+        or data.selected_cross_jacobians is None
+    ):
+        raise RuntimeError("Differentiable rigid contact workspace was not initialized for this Contacts object")
+    wp.launch(
+        _select_local_samples,
+        dim=contacts.rigid_contact_max * 2,
+        inputs=[
+            state.body_q,
+            model.shape_transform,
+            model.shape_body,
+            model.shape_count,
+            data.pair_keys,
+            data.pair_keys.shape[0],
+            data.sample_points,
+            data.sample_normals,
+            data.shape_sample_start,
+            data.shape_sample_count,
+            data.shape_sample_radius,
+            data.normal_cosine_threshold,
+            data.local_sample_count,
+            contacts.rigid_contact_count,
+            contacts.rigid_contact_point0,
+            contacts.rigid_contact_point1,
+            contacts.rigid_contact_normal,
+            contacts.rigid_contact_shape0,
+            contacts.rigid_contact_shape1,
+            data.temperature_epsilon,
+        ],
+        outputs=[
+            data.selected_sample_indices,
+            data.selected_sample_counts,
+            data.selected_sample_temperatures,
+            data.selected_sample_weights,
+            data.selected_temperature_coefficients,
+            data.selected_cross_jacobians,
+        ],
+        device=model.device,
+        record_tape=False,
+    )
+
+
+def eval_differentiable_rigid_contact_kinematics(
+    model,
+    state,
+    contacts,
+    data: DifferentiableRigidContactData,
+    *,
+    out_distance: wp.array | None,
+    out_point0_world: wp.array | None,
+    out_point1_world: wp.array | None,
+) -> None:
+    """Write exact rigid-contact kinematics with RS1Dist witness gradients."""
+    _prepare_contact_witnesses(model, state, contacts, data)
+    wp.launch(
+        _eval_rs1dist_kinematics,
+        dim=contacts.rigid_contact_max,
+        inputs=[
+            state.body_q,
+            model.shape_transform,
+            model.shape_body,
+            model.shape_count,
+            data.pair_keys,
+            data.pair_keys.shape[0],
+            data.sample_points,
+            data.sample_normals,
+            data.selected_sample_indices,
+            data.selected_sample_counts,
+            data.selected_sample_temperatures,
+            data.selected_sample_weights,
+            data.selected_temperature_coefficients,
+            data.selected_cross_jacobians,
+            data.local_sample_count,
+            data.temperature_epsilon,
+            contacts.rigid_contact_count,
+            contacts.rigid_contact_point0,
+            contacts.rigid_contact_point1,
+            contacts.rigid_contact_normal,
+            contacts.rigid_contact_shape0,
+            contacts.rigid_contact_shape1,
+            contacts.rigid_contact_margin0,
+            contacts.rigid_contact_margin1,
+        ],
+        outputs=[out_distance, out_point0_world, out_point1_world],
+        device=model.device,
+    )
+
+
+def eval_differentiable_rigid_contact_forces(
+    model,
+    state,
+    contacts,
+    data: DifferentiableRigidContactData | None,
+    body_f: wp.array,
+    friction_smoothing: float,
+) -> None:
+    """Apply ordinary contact forces with RS1Dist surrogate witness gradients."""
+    if data is None or contacts is None:
         return
-    for pair in data.pairs:
-        wp.launch(
-            _eval_differentiable_rigid_pair,
-            dim=2 * pair.shape_a_data.samples.shape[0],
-            inputs=[
-                state.body_q,
-                model.body_com,
-                model.shape_transform,
-                model.shape_body,
-                model.shape_material_ke,
-                pair.shape_a,
-                pair.shape_b,
-                pair.shape_a_data.samples,
-                pair.shape_b_data.samples,
-                pair.shape_a_data.weights,
-                pair.shape_b_data.weights,
-                pair.shape_a_data.sdf,
-                pair.shape_b_data.sdf,
-                pair.margin,
-            ],
-            outputs=[body_f],
-            device=model.device,
-        )
+    _prepare_contact_witnesses(model, state, contacts, data)
+    wp.launch(
+        _eval_rs1dist_contacts,
+        dim=contacts.rigid_contact_max,
+        inputs=[
+            state.body_q,
+            state.body_qd,
+            model.body_com,
+            model.shape_transform,
+            model.shape_body,
+            model.shape_material_ke,
+            model.shape_material_kd,
+            model.shape_material_kf,
+            model.shape_material_ka,
+            model.shape_material_mu,
+            model.shape_count,
+            data.pair_keys,
+            data.pair_keys.shape[0],
+            data.sample_points,
+            data.sample_normals,
+            data.selected_sample_indices,
+            data.selected_sample_counts,
+            data.selected_sample_temperatures,
+            data.selected_sample_weights,
+            data.selected_temperature_coefficients,
+            data.selected_cross_jacobians,
+            data.local_sample_count,
+            data.temperature_epsilon,
+            contacts.rigid_contact_count,
+            contacts.rigid_contact_point0,
+            contacts.rigid_contact_point1,
+            contacts.rigid_contact_normal,
+            contacts.rigid_contact_shape0,
+            contacts.rigid_contact_shape1,
+            contacts.rigid_contact_margin0,
+            contacts.rigid_contact_margin1,
+            contacts.rigid_contact_stiffness,
+            contacts.rigid_contact_damping,
+            contacts.rigid_contact_friction,
+            friction_smoothing,
+        ],
+        outputs=[body_f],
+        device=model.device,
+    )

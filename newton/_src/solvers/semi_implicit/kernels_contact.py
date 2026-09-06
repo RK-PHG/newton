@@ -628,7 +628,8 @@ def eval_body_contact(
     if shape_a == shape_b:
         return
 
-    # SolverSemiImplicit replaces these pairs with fixed-topology SDF forces.
+    # SolverSemiImplicit replaces these pairs with exact-forward forces whose
+    # witness derivatives use the differentiable rigid-contact surrogate.
     # Other callers pass an empty key array and retain the discrete response.
     if differentiable_pair_count > 0 and shape_a >= 0 and shape_b >= 0:
         shape_low = wp.min(shape_a, shape_b)

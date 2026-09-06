@@ -6,6 +6,7 @@ from __future__ import annotations
 import warp as wp
 
 from ..geometry.differentiable_contacts import _launch_rigid_contact_kinematics
+from ..geometry.differentiable_rigid_contact import eval_differentiable_rigid_contact_kinematics
 from .contacts import Contacts
 from .model import Model
 from .state import State
@@ -40,6 +41,7 @@ def eval_rigid_contact_kinematics(
     out_distance: wp.array[float] | None = None,
     out_point0_world: wp.array[wp.vec3] | None = None,
     out_point1_world: wp.array[wp.vec3] | None = None,
+    use_smooth_witness_gradients: bool = False,
 ) -> None:
     """Evaluate selected rigid-contact kinematic quantities in caller-provided arrays.
 
@@ -65,6 +67,10 @@ def eval_rigid_contact_kinematics(
             shape ``(contacts.rigid_contact_max,)``, dtype :class:`wp.vec3`.
         out_point1_world: Optional world-space support point on shape 1 [m],
             shape ``(contacts.rigid_contact_max,)``, dtype :class:`wp.vec3`.
+        use_smooth_witness_gradients: Preserve the exact forward values while
+            replacing eligible mesh-mesh witness derivatives with the
+            RS1Dist surrogate configured on the collision pipeline. Defaults
+            to ``False``.
 
     Raises:
         ValueError: If no output is provided or an output has an unexpected
@@ -89,13 +95,30 @@ def eval_rigid_contact_kinematics(
     _validate_output("out_point0_world", out_point0_world, wp.vec3, contacts.rigid_contact_max, model.device)
     _validate_output("out_point1_world", out_point1_world, wp.vec3, contacts.rigid_contact_max, model.device)
 
-    _launch_rigid_contact_kinematics(
-        contacts,
-        state.body_q,
-        model.shape_body,
-        out_distance=out_distance,
-        out_normal=None,
-        out_point0_world=out_point0_world,
-        out_point1_world=out_point1_world,
-        device=model.device,
-    )
+    if use_smooth_witness_gradients:
+        data = contacts._differentiable_rigid_contact_data
+        if data is None:
+            raise ValueError(
+                "use_smooth_witness_gradients=True requires Contacts from a CollisionPipeline configured with "
+                "DifferentiableRigidContactConfig"
+            )
+        eval_differentiable_rigid_contact_kinematics(
+            model,
+            state,
+            contacts,
+            data,
+            out_distance=out_distance,
+            out_point0_world=out_point0_world,
+            out_point1_world=out_point1_world,
+        )
+    else:
+        _launch_rigid_contact_kinematics(
+            contacts,
+            state.body_q,
+            model.shape_body,
+            out_distance=out_distance,
+            out_normal=None,
+            out_point0_world=out_point0_world,
+            out_point1_world=out_point1_world,
+            device=model.device,
+        )

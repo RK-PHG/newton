@@ -208,8 +208,10 @@ class SolverSemiImplicit(SolverBase, CouplingInterface):
                 eval_differentiable_rigid_contact_forces(
                     model,
                     state_in,
+                    contacts,
                     contacts._differentiable_rigid_contact_data,
                     body_f_work,
+                    self.friction_smoothing,
                 )
 
             # particle shape contact
