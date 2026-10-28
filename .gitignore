@@ -64,6 +64,8 @@ asv/html
 MUJOCO_LOG.TXT
 imgui.ini
 newton/tests/outputs/
+diffsim/log/differentiable_contact_point_target_*.log
+diffsim/log/differentiable_allegro_grasp_*.log
 
 # Viser recordings
 docs/_static/recordings/
